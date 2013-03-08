@@ -52,7 +52,7 @@ static const OFString &dicomToHostFilename(const OFString &dicomFilename,
         else if (mapToLower)
             hostFilename += OFstatic_cast(char, tolower(c));
         else
-            hostFilename += c;
+            hostFilename += OFstatic_cast(char, c);
     }
     return hostFilename;
 }
@@ -140,6 +140,8 @@ DcmStorageSCU::DcmStorageSCU()
     HaltOnUnsuccessfulStoreMode(OFTrue),
     AllowIllegalProposalMode(OFTrue),
     ReadFromDICOMDIRMode(OFFalse),
+    MoveOriginatorAETitle(""),
+    MoveOriginatorMsgID(0),
     TransferList(),
     CurrentTransferEntry()
 {
@@ -226,6 +228,14 @@ OFBool DcmStorageSCU::getReadFromDICOMDIRMode() const
     return ReadFromDICOMDIRMode;
 }
 
+OFBool DcmStorageSCU::getMOVEOriginatorInfo(OFString& aeTitle,
+                                            Uint16& messageID) const
+{
+    aeTitle = MoveOriginatorAETitle;
+    messageID = MoveOriginatorMsgID;
+    return ( !aeTitle.empty() || (messageID !=0) );
+}
+
 
 void DcmStorageSCU::setDecompressionMode(const E_DecompressionMode decompressionMode)
 {
@@ -254,6 +264,14 @@ void DcmStorageSCU::setAllowIllegalProposalMode(const OFBool allowMode)
 void DcmStorageSCU::setReadFromDICOMDIRMode(const OFBool readMode)
 {
     ReadFromDICOMDIRMode = readMode;
+}
+
+
+void DcmStorageSCU::setMOVEOriginatorInfo(const OFString& AETitle,
+                                          const unsigned short& msgID)
+{
+  MoveOriginatorAETitle = AETitle;
+  MoveOriginatorMsgID   = msgID;
 }
 
 
@@ -836,7 +854,8 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                     }
                     // call the inherited method from the base class doing the real work
                     status = sendSTORERequest((*CurrentTransferEntry)->PresentationContextID, "" /* filename */,
-                        dataset, (*CurrentTransferEntry)->ResponseStatusCode);
+                        dataset, (*CurrentTransferEntry)->ResponseStatusCode,
+                        MoveOriginatorAETitle, MoveOriginatorMsgID);
                     // store some further information (even in case of error)
                     (*CurrentTransferEntry)->AssociationNumber = AssociationCounter;
                     (*CurrentTransferEntry)->NetworkTransferSyntax = dataset->getCurrentXfer();
@@ -891,6 +910,12 @@ OFCondition DcmStorageSCU::sendSOPInstances()
 void DcmStorageSCU::notifySOPInstanceSent(const TransferEntry &transferEntry)
 {
     // do nothing in the default implementation
+}
+
+OFBool DcmStorageSCU::shouldStopAfterCurrentSOPInstance()
+{
+  // should always continue in default implementation
+  return OFFalse;
 }
 
 
@@ -1290,3 +1315,4 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
     }
     return status;
 }
+

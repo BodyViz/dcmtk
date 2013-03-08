@@ -166,7 +166,7 @@ const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 
 
 /* Some MacOS X versions define isinf() and isnan() in <math.h> but not in <cmath> */
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(__APPLE__) && defined(__MACH__) && !defined (__INTEL_COMPILER)
 #undef HAVE_PROTOTYPE_ISINF
 #undef HAVE_PROTOTYPE_ISNAN
 #endif
@@ -2041,7 +2041,7 @@ int OFStandard::rand_r(unsigned int &seed)
 OFStandard::OFHostent OFStandard::getHostByName( const char* name )
 {
 #ifdef HAVE_GETHOSTBYNAME_R
-    unsigned size = 32;
+    unsigned int size = 128;
     char* tmp = new char[size];
     hostent* res = NULL;
     hostent buf;
@@ -2069,7 +2069,7 @@ OFStandard::OFHostent OFStandard::getHostByAddr( const char* addr,
     unsigned size = 32;
     char* tmp = new char[size];
     hostent* res = NULL;
-    hostent buf = {NULL};
+    hostent buf;
     int err = 0;
     while( gethostbyaddr_r( addr, len, type, &buf, tmp, size, &res, &err ) == ERANGE )
     {
@@ -2093,7 +2093,7 @@ OFStandard::OFGroup OFStandard::getGrNam( const char* name )
     unsigned size = 32;
     char* tmp = new char[size];
     group* res = NULL;
-    group buf = {NULL};
+    group buf;
     while( getgrnam_r( name, &buf, tmp, size, &res ) == ERANGE )
     {
         delete[] tmp;
@@ -2119,7 +2119,7 @@ OFStandard::OFPasswd OFStandard::getPwNam( const char* name )
     unsigned size = 32;
     char* tmp = new char[size];
     passwd* res = NULL;
-    passwd buf = {NULL};
+    passwd buf;
     while( getpwnam_r( name, &buf, tmp, size, &res ) == ERANGE )
     {
         delete[] tmp;

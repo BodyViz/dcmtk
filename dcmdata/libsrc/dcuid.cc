@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2011, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -145,6 +145,7 @@ static const UIDNameMap uidNameMap[] = {
     { UID_ChestCADSRStorage,                                   "ChestCADSRStorage" },
     { UID_ColonCADSRStorage,                                   "ColonCADSRStorage" },
     { UID_ColorSoftcopyPresentationStateStorage,               "ColorSoftcopyPresentationStateStorage" },
+    { UID_Comprehensive3DSRStorage,                            "Comprehensive3DSRStorage" },
     { UID_ComprehensiveSRStorage,                              "ComprehensiveSRStorage" },
     { UID_ComputedRadiographyImageStorage,                     "ComputedRadiographyImageStorage" },
     { UID_CTImageStorage,                                      "CTImageStorage" },
@@ -218,6 +219,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_SpectaclePrescriptionReportStorage,                  "SpectaclePrescriptionReportStorage" },
     { UID_StereometricRelationshipStorage,                     "StereometricRelationshipStorage" },
     { UID_SubjectiveRefractionMeasurementsStorage,             "SubjectiveRefractionMeasurementsStorage" },
+    { UID_SurfaceScanMeshStorage,                              "SurfaceScanMeshStorage" },
+    { UID_SurfaceScanPointCloudStorage,                        "SurfaceScanPointCloudStorage" },
     { UID_SurfaceSegmentationStorage,                          "SurfaceSegmentationStorage" },
     { UID_TwelveLeadECGWaveformStorage,                        "TwelveLeadECGWaveformStorage" },
     { UID_UltrasoundImageStorage,                              "UltrasoundImageStorage" },
@@ -518,6 +521,7 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_ChestCADSRStorage,
     UID_ColonCADSRStorage,
     UID_ColorSoftcopyPresentationStateStorage,
+    UID_Comprehensive3DSRStorage,
     UID_ComprehensiveSRStorage,
     UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
@@ -590,6 +594,8 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_SpectaclePrescriptionReportStorage,
     UID_StereometricRelationshipStorage,
     UID_SubjectiveRefractionMeasurementsStorage,
+    UID_SurfaceScanMeshStorage,
+    UID_SurfaceScanPointCloudStorage,
     UID_SurfaceSegmentationStorage,
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
@@ -666,6 +672,7 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_ChestCADSRStorage,
     UID_ColonCADSRStorage,
     UID_ColorSoftcopyPresentationStateStorage,
+    UID_Comprehensive3DSRStorage,
     UID_ComprehensiveSRStorage,
     UID_ComputedRadiographyImageStorage,
     UID_CTImageStorage,
@@ -738,6 +745,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_SpectaclePrescriptionReportStorage,
     UID_StereometricRelationshipStorage,
     UID_SubjectiveRefractionMeasurementsStorage,
+    UID_SurfaceScanMeshStorage,
+    UID_SurfaceScanPointCloudStorage,
     UID_SurfaceSegmentationStorage,
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
@@ -773,11 +782,11 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_RETIRED_VLMultiFrameImageStorage,
     UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     // draft
-    UID_DRAFT_RTBeamsDeliveryInstructionStorage,
+//  UID_DRAFT_RTBeamsDeliveryInstructionStorage,
 //  UID_DRAFT_SRAudioStorage,
-    UID_DRAFT_SRComprehensiveStorage,
+//  UID_DRAFT_SRComprehensiveStorage,
 //  UID_DRAFT_SRDetailStorage,
-    UID_DRAFT_SRTextStorage,
+//  UID_DRAFT_SRTextStorage,
 //  UID_DRAFT_WaveformStorage,
     // DICOS
 //  UID_DICOS_CTImageStorage,
@@ -988,6 +997,7 @@ static const DcmModalityTable modalities[] = {
     { UID_ChestCADSRStorage,                                       "SRh", 4096 },
     { UID_ColonCADSRStorage,                                       "SRo", 4096 },
     { UID_ColorSoftcopyPresentationStateStorage,                   "PSc", 4096 },
+    { UID_Comprehensive3DSRStorage,                                "SR3", 4096 },
     { UID_ComprehensiveSRStorage,                                  "SRc", 4096 },
     { UID_ComputedRadiographyImageStorage,                         "CR",  2048 * 2048 * 2 },
     { UID_CTImageStorage,                                          "CT",  512 * 512 * 2 },
@@ -1060,6 +1070,8 @@ static const DcmModalityTable modalities[] = {
     { UID_SpectaclePrescriptionReportStorage,                      "SRs", 4096 },
     { UID_StereometricRelationshipStorage,                         "OPr", 4096 },
     { UID_SubjectiveRefractionMeasurementsStorage,                 "OPs", 4096 },
+    { UID_SurfaceScanMeshStorage,                                  "SSm", 4096 },
+    { UID_SurfaceScanPointCloudStorage,                            "SSp", 4096 },
     { UID_SurfaceSegmentationStorage,                              "SGs", 4096 },
     { UID_TwelveLeadECGWaveformStorage,                            "TLE", 4096 },
     { UID_UltrasoundImageStorage,                                  "US",  512 * 512 },

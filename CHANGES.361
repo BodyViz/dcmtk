@@ -1,6 +1,373 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.02.15 (onken)
+
+- Added optional status detail when sending C-MOVE response.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Make DcmStorageSCU make use of new MoveOriginator feature.
+  Affects: dcmnet/libsrc/dstorscu.cc
+
+- Added (optional) originating C-MOVE AE title and message ID to
+  C-STORE message.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dstorscu.cc
+           dcmnet/libsrc/scu.cc
+
+**** Changes from 2013.02.13 (riesmeier)
+
+- Added full support for the new Comprehensive 3D SR IOD introduced with
+  Supplement 162.
+  Thanks to forum user "vlad" for the original patch.
+  Added:   dcmsr/include/dcmtk/dcmsr/dsrc3dcc.h
+           dcmsr/libsrc/dsrc3dcc.cc
+  Affects: dcmsr/apps/Makefile.dep
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/CMakeLists.txt
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/libsrc/Makefile.in
+           dcmsr/libsrc/dsrtypes.cc
+
+- Added missing assignment of member variable in setValue() method.
+  Thanks to forum user "vlad" for the report and fix.
+  Affects: dcmsr/libsrc/dsrsc3vl.cc
+
+**** Changes from 2013.02.12 (riesmeier)
+
+- Added new SOP Class UID from Supplement 162 (Comprehensive 3D SR Storage SOP
+  Class) to networking library/tools and to DICOMDIR generation code.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/getscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/libsrc/dcmqrdbi.cc
+
+- Added support for new directory record type "SURFACE SCAN" from Supplement
+  154 (Optical Surface Scanner Storage SOP Class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdirrec.cc
+
+**** Changes from 2013.02.11 (riesmeier)
+
+- Added support for new SOP Class UIDs from Supplement 154 (Optical Surface
+  Scanner Storage SOP Class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/getscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
+- Added support for final text version of Supplement 154 (Optical Surface
+  Scanner Storage SOP Class) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+- Added support for new attribute Zero Velocity Pixel Value (0018,9810)
+  introduced with CP-1236 to checkAndUpdateVR() method.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Added support for CP-1236 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 2013.01.24 (onken)
+
+- Added checking for incoming C-CANCEL message to DcmSCP. Cleaned up formatting.
+  Affects:  dcmnet/include/dcmtk/dcmnet/scp.h
+            dcmnet/libsrc/dimcancl.cc
+            dcmnet/libsrc/scp.cc
+
+**** Changes from 2013.01.24 (riesmeier)
+
+- Fixed wrong calculation of returned number of bytes in createAWTBitmap().
+  Thanks to Fu Peng <fupeng@gmail.com> for the report and suggested fix.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+**** Changes from 2013.01.22 (schlachter)
+
+- Added missing include for OFendl. Thanks to Markus Mertens
+  <Markus.Mertens@evkb.de> for the report.
+  Affects: oflog/libsrc/striconv.cc
+
+- Fixed compilation when HAVE_STL is defined and std::map is used.
+  Thanks to Markus Mertens <Markus.Mertens@evkb.de> for the report.
+  Affects: dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           dcmnet/libsrc/dccftsmp.cc
+
+**** Changes from 2013.01.15 (schlachter)
+
+- Removed comment begin from within comment.
+  Affects: dcmdata/libsrc/dcelem.cc
+
+- Documented new features in log4cplus 1.1.0.
+  Affects: CHANGES.361
+           oflog/etc/logger.cfg
+
+- Some cleanup and MSC6-related fixes for dcmnet.
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/tests/CMakeLists.txt
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/tpool.cc
+
+- Added private undefined functions to class DcmThreadSCP.
+  Affects: dcmnet/include/dcmtk/dcmnet/scpthrd.h
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/tests/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmrt/apps/Makefile.dep
+           dcmrt/libsrc/Makefile.dep
+           dcmrt/tests/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+           oflog/libsrc/Makefile.dep
+
+- Update oflog to log4cplus 1.1.0. New features include an asynchronous
+  appender, log4j- and syslog-compatible UDP appenders, a C interface and lock
+  files to synchronize between two processes writing to the same log file.
+  Added:   oflog/include/dcmtk/oflog/asyncap.h
+           oflog/include/dcmtk/oflog/clfsap.h
+           oflog/include/dcmtk/oflog/clogger.h
+           oflog/include/dcmtk/oflog/config/macosx.h
+           oflog/include/dcmtk/oflog/config/windowsh.h
+           oflog/include/dcmtk/oflog/helpers/fileinfo.h
+           oflog/include/dcmtk/oflog/helpers/lockfile.h
+           oflog/include/dcmtk/oflog/helpers/queue.h
+           oflog/include/dcmtk/oflog/helpers/snprintf.h
+           oflog/include/dcmtk/oflog/internal/cygwin32.h
+           oflog/include/dcmtk/oflog/internal/env.h
+           oflog/include/dcmtk/oflog/internal/internal.h
+           oflog/include/dcmtk/oflog/internal/socket.h
+           oflog/include/dcmtk/oflog/log4judp.h
+           oflog/include/dcmtk/oflog/mdc.h
+           oflog/include/dcmtk/oflog/tchar.h
+           oflog/include/dcmtk/oflog/thread/impl/syncimpl.h
+           oflog/include/dcmtk/oflog/thread/impl/syncpmsm.h
+           oflog/include/dcmtk/oflog/thread/impl/syncpthr.h
+           oflog/include/dcmtk/oflog/thread/impl/syncwin.h
+           oflog/include/dcmtk/oflog/thread/impl/thredimp.h
+           oflog/include/dcmtk/oflog/thread/impl/tls.h
+           oflog/include/dcmtk/oflog/thread/syncprim.h
+           oflog/include/dcmtk/oflog/thread/syncpub.h
+           oflog/include/dcmtk/oflog/thread/threads.h
+           oflog/include/dcmtk/oflog/tracelog.h
+           oflog/include/dcmtk/oflog/version.h
+           oflog/libsrc/asyncap.cc
+           oflog/libsrc/clfsap.cc
+           oflog/libsrc/clogger.cc
+           oflog/libsrc/cygwin32.cc
+           oflog/libsrc/env.cc
+           oflog/libsrc/fileinfo.cc
+           oflog/libsrc/lloguser.cc
+           oflog/libsrc/lockfile.cc
+           oflog/libsrc/log4judp.cc
+           oflog/libsrc/logmacro.cc
+           oflog/libsrc/mdc.cc
+           oflog/libsrc/queue.cc
+           oflog/libsrc/snprintf.cc
+           oflog/libsrc/strccloc.cc
+           oflog/libsrc/strcloc.cc
+           oflog/libsrc/striconv.cc
+           oflog/libsrc/tls.cc
+           oflog/libsrc/version.cc
+  Removed: oflog/include/dcmtk/oflog/config/CMakeLists.txt
+           oflog/include/dcmtk/oflog/helpers/CMakeLists.txt
+           oflog/include/dcmtk/oflog/helpers/syncppth.h
+           oflog/include/dcmtk/oflog/helpers/syncprims.h
+           oflog/include/dcmtk/oflog/helpers/threads.h
+           oflog/include/dcmtk/oflog/spi/CMakeLists.txt
+  Affects: CMake/GenerateDCMTKConfigure.cmake
+           CMake/osconfig.h.in
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/osconfig.h.in
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmnet/Makefile.in
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           oflog/include/dcmtk/oflog/*
+           oflog/libsrc/CMakeLists.txt
+           oflog/libsrc/Makefile.in
+           oflog/libsrc/*.cc
+           ofstd/include/dcmtk/ofstd/ofmap.h
+           ofstd/include/dcmtk/ofstd/ofstring.h
+           ofstd/include/dcmtk/ofstd/ofvector.h
+           ofstd/libsrc/ofstring.cc
+
+**** Changes from 2013.01.11 (onken)
+
+- Make sure osconfig.h is included before WITH_THREADS is evaluated.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
+**** Changes from 2013.01.10 (onken)
+
+- Resized buffer for hostname lookup due to possible bug
+  in glibc on Linux systems. Thanks to Peter Klotz
+  <Peter.Klotz@ith-icoserve.com> for the report and patch.
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Make sure that missing value on last element triggers error during parsing.
+  Affects: dcmdata/libsrc/dcelem.cc
+
+**** Changes from 2013.01.09 (onken)
+
+- Initial checkin of SCP pool, threaded SCP and related test.
+  Added DcmSCP functionality to respond to C-FIND, C-MOVE and C-STORE.
+  Added DcmSCP function to disable host lookup.
+  Refactored DcmSCP configuration to reside in extra class.
+  DcmSCP now permits checking of calling and called AE title in derviced classes.
+  Derived DcmSCP classes can now check whether connecting host is granted access.
+  Added:   dcmnet/docs/cptscp.dox
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/include/dcmtk/dcmnet/scppool.h
+           dcmnet/include/dcmtk/dcmnet/scpthrd.h
+           dcmnet/libsrc/scpcfg.cc
+           dcmnet/libsrc/scppool.cc
+           dcmnet/libsrc/scpthrd.cc
+           dcmnet/tests/tpool.cc
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/scp.cc
+           dcmnet/tests/CMakeLists.txt
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/tests.cc
+           ofstd/tests/tests.cc
+
+- Updated Makefile.dep files, triggered by latest changes in libcharls.
+  Affects: dcmjpls/libcharls/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+
+- Minor documentation fixes.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+
+**** Changes from 2013.01.08 (schlachter)
+
+- Added missing include for size_t.
+  Affects: dcmjpls/libcharls/util.h
+
+- Removed use of long long.
+  Affects: dcmjpls/libcharls/config.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/util.h
+
+- Disabled broken wide character support on MSC6.
+  Affects: ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/libsrc/ofcmdln.cc
+           ofstd/libsrc/ofconapp.cc
+
+- Don't redefine _LARGEFILE_SOURCE if it is already defined. Thanks to Hans
+  Johnson <hans-johnson@uiowa.edu> for the hint and proposed patch.
+  Affects: CMake/osconfig.h.in
+
+- Only call tolower() with unsigned char argument.
+  Affects: dcmnet/libsrc/dstorscu.cc
+
+- Removed unnecessary incomplete initialisation.
+  Affects: ofstd/libsrc/ofstd.cc
+
+**** Changes from 2013.01.04 (onken)
+
+- Made DcmAssociationConfiguration and underlying classes copy-constructable.
+  Replaced all occurences of DcmSimpleMap with OFMap.
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/include/dcmtk/dcmnet/dcasccfg.h
+           dcmnet/include/dcmtk/dcmnet/dccfenmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfpcmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfprmp.h
+           dcmnet/include/dcmtk/dcmnet/dccfrsmp.h
+           dcmnet/include/dcmtk/dcmnet/dccftsmp.h
+           dcmnet/include/dcmtk/dcmnet/dcmsmap.h
+           dcmnet/libsrc/dcasccfg.cc
+           dcmnet/libsrc/dccfenmp.cc
+           dcmnet/libsrc/dccfpcmp.cc
+           dcmnet/libsrc/dccfprmp.cc
+           dcmnet/libsrc/dccfrsmp.cc
+           dcmnet/libsrc/dccftsmp.cc
+           dcmnet/libsrc/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+
+- Added dependencies for latest tmem test.
+  Affects: ofstd/tests/Makefile.dep
+
+- Added possibility to stop storage SCU after sending the current file.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+
+**** Changes from 2013.01.04 (schlamelcher)
+
+- Fixed OFshared_ptr for VC6.
+  Affects: ofstd/include/dcmtk/ofstd/ofmem.h
+
+**** Changes from 2012.12.21 (onken)
+
+- Fixed intel compiler issue on Mac OS X. Thanks to Hans
+  Johnson <hans-johnson@uiowa.edu> for the hint and proposed patch.
+  Affects: ofstd/libsrc/ofstd.cc
+
+**** Changes from 2012.12.11 (schlachter)
+
+- Fixed test failure on 64 bit systems.
+  Affects: dcmdata/tests/tparser.cc
+
+**** Changes from 2012.12.12 (schlamelcher)
+
+- Fixed error in OFshared_ptr when using Visual Studio 2008.
+  Affects: ofstd/include/dcmtk/ofstd/ofmem.h
+
 **** Changes from 2012.12.11 (schlachter)
 
 - Clear some member variables in destructors.
