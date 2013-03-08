@@ -347,6 +347,7 @@ END_EXTERN_C
 
 /* Headers other than ISO C++, such as BSD and Posix.1 headers */
 
+/** Commenting this out to get everything compiling on iOS - CN 3/7/13
 // define INCLUDE_LIBC to include <libc.h> if available
 #ifdef INCLUDE_LIBC
 #ifdef HAVE_LIBC_H
@@ -359,6 +360,7 @@ END_EXTERN_C
 #endif
 #endif
 #endif
+*/
 
 // define INCLUDE_UNISTD to include <unistd.h> if available
 #ifdef INCLUDE_UNISTD
