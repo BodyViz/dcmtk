@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -85,9 +85,16 @@ OFBool DcmSpecificCharacterSet::getTransliterationMode() const
 }
 
 
+OFBool DcmSpecificCharacterSet::getDiscardIllegalSequenceMode() const
+{
+    return EncodingConverter.getDiscardIllegalSequenceMode();
+}
+
+
 OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromCharset,
                                                         const OFString &toCharset,
-                                                        const OFBool transliterate)
+                                                        const OFBool transliterate,
+                                                        const OFBool discardIllegal)
 {
     // first, make sure that all conversion descriptors are closed
     closeConversionDescriptors();
@@ -119,7 +126,7 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromChar
             // multiple character sets specified (code extensions used)
             status = selectCharacterSetWithCodeExtensions(sourceVM);
         }
-        // enabled or disable the transliteration mode
+        // enable or disable the transliteration mode
         if (status.good())
         {
             status = EncodingConverter.setTransliterationMode(transliterate);
@@ -136,6 +143,23 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromChar
                 }
             }
         }
+        // enable or disable the discard illegal sequence mode
+        if (status.good())
+        {
+            status = EncodingConverter.setDiscardIllegalSequenceMode(discardIllegal);
+            if (status.good())
+            {
+                // output some useful debug information
+                if (discardIllegal)
+                {
+                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Enabled 'discard illegal sequence' mode, "
+                        << "i.e. non-representable characters will be discarded");
+                } else {
+                    DCMDATA_DEBUG("DcmSpecificCharacterSet: Disabled 'discard illegal sequence' mode, "
+                        << "i.e. non-representable characters will not be discarded");
+                }
+            }
+        }
     }
     return status;
 }
@@ -143,13 +167,14 @@ OFCondition DcmSpecificCharacterSet::selectCharacterSet(const OFString &fromChar
 
 OFCondition DcmSpecificCharacterSet::selectCharacterSet(DcmItem &dataset,
                                                         const OFString &toCharset,
-                                                        const OFBool transliterate)
+                                                        const OFBool transliterate,
+                                                        const OFBool discardIllegal)
 {
     OFString fromCharset;
     // check whether Specific Character Set (0008,0005) is present in the given item/dataset
     dataset.findAndGetOFStringArray(DCM_SpecificCharacterSet, fromCharset, OFFalse /*searchIntoSub*/);
     // if missing or empty, the default character set (ASCII) will be used
-    return selectCharacterSet(fromCharset, toCharset, transliterate);
+    return selectCharacterSet(fromCharset, toCharset, transliterate, discardIllegal);
 }
 
 

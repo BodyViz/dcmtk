@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2012, OFFIS e.V.
+ *  Copyright (C) 2001-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -138,12 +138,13 @@ END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>     /* for GetFileAttributes() */
+#include <direct.h>      /* for _mkdir() */
 
-#ifndef R_OK /* windows defines access() but not the constants */
+#ifndef R_OK /* Windows defines access() but not the constants */
 #define W_OK 02 /* Write permission */
 #define R_OK 04 /* Read permission */
 #define F_OK 00 /* Existance only */
-#endif /* R_OK */
+#endif /* !R_OK */
 
 #endif /* HAVE_WINDOWS_H */
 
@@ -576,6 +577,7 @@ OFString &OFStandard::normalizeDirName(OFString &result,
 {
     result = dirName;
     /* remove trailing path separators (keep it if appearing at the beginning of the string) */
+    /* TODO: do we need to check for absolute path containing Windows drive name, e.g. "c:\"? */
     while ((result.length() > 1) && (result.at(result.length() - 1) == PATH_SEPARATOR))
         result.erase(result.length() - 1, 1);
     if (allowEmptyDirName)
@@ -601,7 +603,7 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
     // # or combinations of absolute paths in both 'dirName' and 'fileName'
 
     /* check whether 'fileName' contains absolute path */
-    /* (this check also covers UNC syntax, e. g. "\\server\...") */
+    /* (this check also covers UNC syntax, e.g. "\\server\...") */
     if (!fileName.empty() && (fileName.at(0) == PATH_SEPARATOR))
     {
         result = fileName;
@@ -610,7 +612,7 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
 #ifdef HAVE_WINDOWS_H
     else if ((fileName.length() >= 3))
     {
-        /* check for absolute path containing windows drive name, e. g. "c:\..." */
+        /* check for absolute path containing Windows drive name, e.g. "c:\..." */
         char c = fileName.at(0);
         if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')))
         {
@@ -775,6 +777,72 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 #endif
     /* return number of added files */
     return fileList.size() - initialSize;
+}
+
+
+OFCondition OFStandard::createDirectory(const OFString &dirName,
+                                        const OFString &rootDir)
+{
+    OFCondition status = EC_Normal;
+    /* first, check whether the directory already exists */
+    if (!dirExists(dirName))
+    {
+        /* then, check whether the given prefix can be skipped */
+        size_t pos = 0;
+        size_t dirLength = dirName.length();
+        /* check for absolute path containing Windows drive name, e. g. "c:\",
+         * is not required since the root directory should always exist */
+        if ((dirLength > 1) && (dirName.at(dirLength - 1) == PATH_SEPARATOR))
+        {
+            /* ignore trailing path separator */
+            --dirLength;
+        }
+        size_t rootLength = rootDir.length();
+        if ((rootLength > 1) && (rootDir.at(rootLength - 1) == PATH_SEPARATOR))
+        {
+            /* ignore trailing path separator */
+            --rootLength;
+        }
+        /* check for "compatible" length */
+        if ((rootLength > 0) && (rootLength < dirLength))
+        {
+            /* check for common prefix */
+            if (dirName.compare(0, rootLength, rootDir) == 0)
+            {
+                /* check whether root directory really exists */
+                if (dirExists(rootDir.substr(0, rootLength)))
+                {
+                    /* start searching after the common prefix */
+                    pos = rootLength;
+                }
+            }
+        }
+        /* and finally, iterate over all subsequent subdirectories */
+        do {
+            /* search for next path separator */
+            pos = dirName.find(PATH_SEPARATOR, pos + 1);
+            /* get name of current directory component */
+            const OFString subDir = dirName.substr(0, pos);
+            if (!dirExists(subDir))
+            {
+                /* and create the directory component (if not already existing) */
+#ifdef HAVE_WINDOWS_H
+                if (_mkdir(subDir.c_str()) == -1)
+#else
+                if (mkdir(subDir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == -1)
+#endif
+                {
+                    char errBuf[256];
+                    OFString message("Cannot create directory: ");
+                    message.append(strerror(errno, errBuf, sizeof(errBuf)));
+                    status = makeOFCondition(0, EC_CODE_CannotCreateDirectory, OF_error, message.c_str());
+                    /* exit the loop */
+                    break;
+                }
+            }
+        } while (pos < dirLength);
+    }
+    return status;
 }
 
 

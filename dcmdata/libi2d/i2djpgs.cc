@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2012, OFFIS e.V.
+ *  Copyright (C) 2007-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -18,6 +18,7 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  */
+
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2djpgs.h"
@@ -41,7 +42,7 @@ OFCondition I2DJpegSource::openFile(const OFString &filename)
 {
   DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Opening JPEG file: " << filename);
   OFCondition cond;
-  if (filename.length() == 0)
+  if (filename.empty())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "No JPEG filename specified");
 
   // Try to open JPEG file
@@ -571,6 +572,8 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
 OFCondition I2DJpegSource::createJPEGFileMap()
 {
   DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examing JPEG file and creating map of JPEG markers");
+  // clear any old data
+  clearMap();
   E_JPGMARKER marker;
   JPEGFileMapEntry *entry = NULL;
   OFBool lastWasSOSMarker = OFFalse;

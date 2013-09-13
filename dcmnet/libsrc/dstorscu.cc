@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -228,12 +228,13 @@ OFBool DcmStorageSCU::getReadFromDICOMDIRMode() const
     return ReadFromDICOMDIRMode;
 }
 
-OFBool DcmStorageSCU::getMOVEOriginatorInfo(OFString& aeTitle,
-                                            Uint16& messageID) const
+
+OFBool DcmStorageSCU::getMOVEOriginatorInfo(OFString &aeTitle,
+                                            Uint16 &messageID) const
 {
     aeTitle = MoveOriginatorAETitle;
     messageID = MoveOriginatorMsgID;
-    return ( !aeTitle.empty() || (messageID !=0) );
+    return !aeTitle.empty() || (messageID != 0);
 }
 
 
@@ -267,11 +268,11 @@ void DcmStorageSCU::setReadFromDICOMDIRMode(const OFBool readMode)
 }
 
 
-void DcmStorageSCU::setMOVEOriginatorInfo(const OFString& AETitle,
-                                          const unsigned short& msgID)
+void DcmStorageSCU::setMOVEOriginatorInfo(const OFString &aeTitle,
+                                          const Uint16 messageID)
 {
-  MoveOriginatorAETitle = AETitle;
-  MoveOriginatorMsgID   = msgID;
+    MoveOriginatorAETitle = aeTitle;
+    MoveOriginatorMsgID = messageID;
 }
 
 
@@ -898,6 +899,9 @@ OFCondition DcmStorageSCU::sendSOPInstances()
                 notifySOPInstanceSent(**CurrentTransferEntry);
             }
             ++CurrentTransferEntry;
+            // check whether the sending process should be stopped
+            if (shouldStopAfterCurrentSOPInstance())
+                break;
         }
     } else {
         // report an error to the caller
@@ -912,23 +916,11 @@ void DcmStorageSCU::notifySOPInstanceSent(const TransferEntry &transferEntry)
     // do nothing in the default implementation
 }
 
+
 OFBool DcmStorageSCU::shouldStopAfterCurrentSOPInstance()
 {
-  // should always continue in default implementation
-  return OFFalse;
-}
-
-
-OFCondition DcmStorageSCU::releaseAssociation()
-{
-    OFCondition status = DIMSE_ILLEGALASSOCIATION;
-    // check whether there is an active association
-    if (isConnected())
-    {
-        closeAssociation(DCMSCU_RELEASE_ASSOCIATION);
-        status = EC_Normal;
-    }
-    return status;
+    // should always continue in the default implementation
+    return OFFalse;
 }
 
 
@@ -969,7 +961,7 @@ void DcmStorageSCU::getStatusSummary(OFString &summary) const
             {
                 ++numError;
             }
-            else if ((rspStatus == STATUS_STORE_Warning_CoersionOfDataElements) ||
+            else if ((rspStatus == STATUS_STORE_Warning_CoercionOfDataElements) ||
                      (rspStatus == STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass) ||
                      (rspStatus == STATUS_STORE_Warning_ElementsDiscarded) ||
                       DICOM_WARNING_STATUS(rspStatus) /* not really needed but ... */)
@@ -1315,4 +1307,3 @@ OFCondition DcmStorageSCU::checkSOPInstance(const OFString &sopClassUID,
     }
     return status;
 }
-

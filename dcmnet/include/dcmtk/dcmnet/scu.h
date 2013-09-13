@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008-2012, OFFIS e.V.
+ *  Copyright (C) 2008-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -115,6 +115,7 @@ private:
 
   /** Private undefined assignment operator.
    *  @param other The find response that should be assigned from
+   *  @return Reference to this
    */
   QRResponse &operator=(const QRResponse &other);
 };
@@ -169,6 +170,7 @@ private:
 
   /** Private undefined assignment operator
    *  @param other Response that should be assigned from
+   *  @return Reference to this
    */
   RetrieveResponse &operator=(const RetrieveResponse &other);
 };
@@ -260,7 +262,7 @@ public:
    *  disabled by default. See setDatasetConversionMode() on how to enable it.
    *  @param presID        [in]  Contains in the end the ID of the presentation context which
    *                             was specified in the DIMSE command. If 0 is given, the
-   *                             function tries to find an approriate presentation context
+   *                             function tries to find an appropriate presentation context
    *                             itself (based on SOP class and original transfer syntax of
    *                             the 'dicomFile' or 'dataset').
    *  @param dicomFile     [in]  The filename of the DICOM file to be sent. Alternatively, a
@@ -276,7 +278,7 @@ public:
    *                               client's AE title.
    *  @param moveOriginatorMsgID   [in] If this C-STORE is started due to a C-MOVE request,
    *                               this parameter informs the C-STORE SCP about the C-MOVE
-   *                               message's message ID.
+   *                               message ID.
    *  @return EC_Normal if request could be issued and response was received successfully,
    *          error code otherwise. That means that if the receiver sends a response denoting
    *          failure of the storage request, EC_Normal will be returned.
@@ -285,8 +287,8 @@ public:
                                        const OFString &dicomFile,
                                        DcmDataset *dataset,
                                        Uint16 &rspStatusCode,
-                                       const OFString& moveOriginatorAETitle ="",
-                                       const unsigned short& moveOriginatorMsgID = 0);
+                                       const OFString &moveOriginatorAETitle = "",
+                                       const Uint16 moveOriginatorMsgID = 0);
 
   /** Sends a C-MOVE Request on given presentation context and receives list of responses.
    *  The function receives the first response and then calls the function handleMOVEResponse()
@@ -308,7 +310,7 @@ public:
    *                                      pointer for this case. After receiving the results,
    *                                      the caller is responsible for freeing the memory of
    *                                      this variable. If NULL is specified, the responses
-   *                                      will not bereturned to the caller.
+   *                                      will not be returned to the caller.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be send and responses
    *          (with whatever status) could be received.
    */
@@ -355,7 +357,7 @@ public:
    *                         specifies NULL, no responses will be returned; otherwise there
    *                         should be at least one final C-GET response (mandatory). C-GET
    *                         responses after each DICOM object received are optional and may
-   *                         have been ommitted by the server.
+   *                         have been omitted by the server.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be sent and expected
    *          responses (with whatever status) could be received.
    */
@@ -364,7 +366,7 @@ public:
                                       OFList<RetrieveResponse*> *responses);
 
   /** Does the logic for switching between C-GET Response and C-STORE Requests. Sends a C-GET
-   *  Request on given presentation context and receives list of responses. Ihe full list of
+   *  Request on given presentation context and receives list of responses. The full list of
    *  responses is returned to the caller. If he is not interested, he can set responses=NULL
    *  when calling the function. After sending a C-GET Request, there might be two different
    *  responses coming in: C-GET-RSP (optional after each received object and mandatory after
@@ -382,7 +384,7 @@ public:
    *                         specifies NULL, no responses will be returned; otherwise there
    *                         should be at least one final C-GET response (mandatory). C-GET
    *                         responses after each DICOM object received are optional and may
-   *                         have been ommitted by the server.
+   *                         have been omitted by the server.
    *  @return EC_Normal if everything went fine, i.e.\ if request could be send
    *          and expected responses (with whatever status) could be received.
    */
@@ -392,7 +394,7 @@ public:
 
   /** Function handling a single C-GET Response. This standard handler reads the status of the
    *  response and decides whether to receive any further messages related to the original
-   *  C-GET Request or whether the last response was received or an error occured.
+   *  C-GET Request or whether the last response was received or an error occurred.
    *  @param presID              [in]  The presentation context the C-GET Response was
    *                                   received on.
    *  @param response            [in]  The response received
@@ -407,7 +409,7 @@ public:
 
   /** Function handling a single C-STORE Request. If storage mode is set to disk (default),
    *  this function is called and the incoming object stored to disk.
-   *  @param presID              [in]  The presentation context the C-STORE Response was
+   *  @param presID              [in]  The presentation context the C-STORE Request was
    *                                   received on.
    *  @param incomingObject      [in]  The dataset (the object) received
    *  @param continueCGETSession [out] Defines whether it is decided to wait for further
@@ -543,9 +545,25 @@ public:
                                                const int timeout = 0);
 
   /** Closes the association created by this SCU. Also resets the current association.
+   *  @deprecated The use of this method is deprecated. Please use releaseAssociation()
+   *    or abortAssociation() instead.
    *  @param closeType [in] Define whether to release or abort the association
    */
   virtual void closeAssociation(const DcmCloseAssociationType closeType);
+
+  /** Releases the current association by sending an A-RELEASE request to the SCP.
+   *  Please note that this release only applies to associations that have been
+   *  created by calling initNetwork() and negotiateAssociation().
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition releaseAssociation();
+
+  /** Aborts the current association by sending an A-ABORT request to the SCP.
+   *  Please note that this abort only applies to associations that have been
+   *  created by calling initNetwork() and negotiateAssociation().
+   *  @return status, EC_Normal if successful, an error code otherwise
+   */
+  virtual OFCondition abortAssociation();
 
   /* Set methods */
 
@@ -600,7 +618,7 @@ public:
                                     const OFString &profile);
 
   /** Set the directory that should be used by the standard C-GET handler to store objects
-   *  that come in with the corresponding C-STORE rqeuests
+   *  that come in with the corresponding C-STORE requests
    *  @param storeDir [in] The directory to store to. It is checked in handleSTORERequest()
    *                       whether the directory is writeable and readable. Per default, the
    *                       received objects are stored in the current working directory.
@@ -926,7 +944,7 @@ private:
    */
   DcmSCU &operator=(const DcmSCU &src);
 
-  /// Associaton of this SCU. This class only handles 1 association at a time.
+  /// Association of this SCU. This class only handles 1 association at a time.
   T_ASC_Association *m_assoc;
 
   /// The DICOM network the association is based on

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -760,7 +760,7 @@ OFBool WlmDataSource::IsValidDateOrDateRange( const OFString& value )
   // create new string without leading or trailing blanks
   OFString dateRange = DeleteLeadingAndTrailingBlanks( value );
 
-  if (dateRange.length() == 0)
+  if (dateRange.empty())
     return OFFalse;
 
   // check if only allowed characters occur in the string
@@ -826,7 +826,7 @@ OFBool WlmDataSource::IsValidDate( const OFString& value )
   OFString date = DeleteLeadingAndTrailingBlanks( value );
   // check parameter
 
-  if( value.length() == 0 )
+  if( value.empty() )
     return( OFFalse );
 
   // check if only allowed characters occur in the string
@@ -870,7 +870,7 @@ OFBool WlmDataSource::IsValidTimeOrTimeRange( const OFString& value )
   OFString timeRange = DeleteLeadingAndTrailingBlanks( value );
 
   // check if string is empty now
-  if( timeRange.length() == 0 )
+  if( timeRange.empty() )
     return( OFFalse );
 
   // check if only allowed characters occur in the string
@@ -935,7 +935,7 @@ OFBool WlmDataSource::IsValidTime( const OFString& value )
   OFString timevalue = DeleteLeadingAndTrailingBlanks( value );
 
   // check if string is empty now
-  if( timevalue.length() == 0)
+  if( timevalue.empty() )
     return( OFFalse );
 
   // check if only allowed characters occur in the string
@@ -1054,14 +1054,14 @@ OFString WlmDataSource::DeleteLeadingAndTrailingBlanks( const OFString& value )
   size_t pos = 0;
 
   // delete leading blanks
-  while ( (returnValue.length() > 0) && (returnValue[pos] == ' ') )
+  while ( !returnValue.empty() && (returnValue[pos] == ' ') )
     pos++; // count blanks
   if (pos > 0)
     returnValue.erase(0, pos);
 
   // delete trailing blanks, start from end of string
   pos = returnValue.length() - 1;
-  while ( (returnValue.length() > 0) && (returnValue[pos] == ' ') )
+  while ( !returnValue.empty() && (returnValue[pos] == ' ') )
     pos--;
   if (pos < returnValue.length() -1)
     returnValue.erase(pos);
@@ -1085,7 +1085,7 @@ OFBool WlmDataSource::GetStringValue( const DcmElement *elem,
 {
   DcmElement *elemNonConst = OFconst_cast(DcmElement*, elem);
   OFCondition result = elemNonConst->getOFStringArray( resultVal );
-  if (result.bad() || resultVal.length() == 0)
+  if( result.bad() || resultVal.empty() )
     return OFFalse;
   return OFTrue;
 }

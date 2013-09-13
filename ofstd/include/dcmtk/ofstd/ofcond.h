@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2012, OFFIS e.V.
+ *  Copyright (C) 2001-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -114,6 +114,15 @@ extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_NoEncodingSelected;
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotCreateTemporaryFile;
 /// condition constant: error, invalid filename
 extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_InvalidFilename;
+/// condition constant: error, could not generate filename
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotGenerateFilename;
+
+/// condition constant: error, directory does not exist
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_DirectoryDoesNotExist;
+/// condition constant: error, directory is not writable
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_DirectoryNotWritable;
+/// condition constant: error, could not generate directory name
+extern DCMTK_OFSTD_EXPORT const OFConditionConst EC_CouldNotGenerateDirectoryName;
 
 /// status code constant: error, cannot open character encoding
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotOpenEncoding;
@@ -123,6 +132,9 @@ extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCloseEncoding;
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotConvertEncoding;
 /// status code constant: error, cannot control character encoding converter
 extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotControlConverter;
+
+/// status code constant: error, cannot create directory
+extern DCMTK_OFSTD_EXPORT const unsigned short EC_CODE_CannotCreateDirectory;
 
 /** use this macro for creating static OFCondition instances. Instead of an
  *  OFCondition instance which needs a constructor, an instance of

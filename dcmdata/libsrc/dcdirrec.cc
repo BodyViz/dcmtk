@@ -580,11 +580,8 @@ E_DirRecType DcmDirectoryRecord::lookForRecordType()
                 recType->getString(recName);
                 localType = recordNameToType(recName);
 
-                DCMDATA_TRACE("DcmDirectoryRecord::lookForRecordType() RecordType Element ("
-                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << recType->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << recType->getETag()
-                    << ") Type = " << DRTypeNames[DirRecordType]);
+                DCMDATA_TRACE("DcmDirectoryRecord::lookForRecordType() RecordType Element "
+                    << recType->getTag() << " Type = " << DRTypeNames[DirRecordType]);
             }
         }
     }
@@ -686,10 +683,9 @@ DcmDirectoryRecord *DcmDirectoryRecord::lookForReferencedMRDR()
 #ifdef DEBUG
                 Uint32 l_uint = 0;
                 offElem->getUint32(l_uint);
-                DCMDATA_TRACE("DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset Element ("
+                DCMDATA_TRACE("DcmDirectoryRecord::lookForReferencedMRDR() MRDR Offset Element "
+                    << offElem->getTag() << " offs=0x"
                     << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << STD_NAMESPACE setw(4) << offElem->getGTag() << ","
-                    << STD_NAMESPACE setw(4) << offElem->getETag() << ") offs=0x"
                     << STD_NAMESPACE setw(8) << l_uint
                     << " p=" << OFstatic_cast(void *, offElem)
                     << " n=" << OFstatic_cast(void *, localMRDR));
@@ -1122,19 +1118,21 @@ DcmEVR DcmDirectoryRecord::ident() const
 OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &fromCharset,
                                                     const OFString &toCharset,
                                                     const OFBool transliterate,
-                                                    const OFBool updateCharset)
+                                                    const OFBool updateCharset,
+                                                    const OFBool discardIllegal)
 {
     // call the method of the base class; this method is only needed to avoid a compiler warning
-    return DcmItem::convertCharacterSet(fromCharset, toCharset, transliterate, updateCharset);
+    return DcmItem::convertCharacterSet(fromCharset, toCharset, transliterate, updateCharset, discardIllegal);
 }
 
 
 OFCondition DcmDirectoryRecord::convertCharacterSet(const OFString &toCharset,
                                                     const OFBool transliterate,
-                                                    const OFBool ignoreCharset)
+                                                    const OFBool ignoreCharset,
+                                                    const OFBool discardIllegal)
 {
     // call the method of the base class; this method is only needed to avoid a compiler warning
-    return DcmItem::convertCharacterSet(toCharset, transliterate, ignoreCharset);
+    return DcmItem::convertCharacterSet(toCharset, transliterate, ignoreCharset, discardIllegal);
 }
 
 
@@ -1157,7 +1155,7 @@ OFCondition DcmDirectoryRecord::convertCharacterSet(DcmSpecificCharacterSet &con
             << fromCharset << "'" << (fromCharset.empty() ? " (ASCII)" : "") << " to '"
             << toCharset << "'" << (toCharset.empty() ? " (ASCII)" : ""));
         // select source and destination character set, use same transliteration mode
-        status = newConverter.selectCharacterSet(fromCharset, toCharset, converter.getTransliterationMode());
+        status = newConverter.selectCharacterSet(fromCharset, toCharset, converter.getTransliterationMode(), converter.getDiscardIllegalSequenceMode());
         if (status.good())
         {
             // convert all affected element values in the item with the new converter

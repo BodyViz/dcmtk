@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2011-2012, OFFIS e.V.
+ *  Copyright (C) 2011-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -121,7 +121,8 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 
     /** get mode that specifies whether or not compressed datasets are decompressed if needed,
      *  i.e.\ whether the transfer syntax of the dataset is changed for network transmission.
-     *  @return decompression mode. See definition of E_DecompressionMode for possible values.
+     *  @return decompression mode. See definition of DcmStorageSCU::E_DecompressionMode for
+     *    possible values.
      */
     E_DecompressionMode getDecompressionMode() const;
 
@@ -151,19 +152,20 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      */
     OFBool getReadFromDICOMDIRMode() const;
 
-    /** Get C-MOVE originator information if set.
-     *  @param  aeTitle  The AE Title of the originating C-MOVE client. Empty if not set.
-     *  @param  messageID  The message ID used within the originating C-MOVE request.
-     *                     0 if not set.
-     *  @return OFTrue if either of both params is set
+    /** get C-MOVE originator information (if set)
+     *  @param  aeTitle    the AE title of the originating C-MOVE client.  Empty if not set.
+     *  @param  messageID  the message ID used within the originating C-MOVE request.  0 if
+     *                     not set.
+     *  @return OFTrue if either of both parameters is set
      */
-    OFBool getMOVEOriginatorInfo(OFString& aeTitle,
-                                 Uint16& messageID) const;
+    OFBool getMOVEOriginatorInfo(OFString &aeTitle,
+                                 Uint16 &messageID) const;
 
     /** set mode that specifies whether or not compressed datasets are decompressed if needed,
      *  i.e.\ whether the transfer syntax of the dataset is changed for network transmission.
-     *  @param  decompressionMode  decompression mode. See definition of E_DecompressionMode
-     *                             for both possible values and the default value.
+     *  @param  decompressionMode  decompression mode. See definition of
+     *                             DcmStorageSCU::E_DecompressionMode for both possible values
+     *                             and the default value.
      */
     void setDecompressionMode(const E_DecompressionMode decompressionMode);
 
@@ -200,19 +202,21 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      */
     void setReadFromDICOMDIRMode(const OFBool readMode);
 
-    /** If the C-STORE operation was initiated by a client's C-MOVE request, it is possible
-     *  to convey the original MOVE client's information (AE title and the message ID of
-     *  the corresponding C-MOVE message) as part of the C-STORE messages in order to
-     *  inform the C-STORE receiver (SCP) about the original sender.
-     *  @param  AETitle   The AE title of the sender. If empty, none is sent.
-     *  @param  msgID     Message ID of original C-MOVE request. If 0, none is sent.
+    /** set C-MOVE originator information.
+     *  If the C-STORE operation was initiated by a client's C-MOVE request, it is possible
+     *  to convey the C-MOVE originating information (AE title and the message ID of the
+     *  corresponding C-MOVE message) as part of the C-STORE messages in order to inform the
+     *  C-STORE receiver (Storage SCP) about the original sender (Move SCU).
+     *  @param  aeTitle    the AE title of the originating C-MOVE client. If empty, none is
+     *                     sent.
+     *  @param  messageID  message ID of the originating C-MOVE request.  If 0, none is sent.
      */
-    void setMOVEOriginatorInfo(const OFString& AETitle ="",
-                               const unsigned short& msgID = 0);
+    void setMOVEOriginatorInfo(const OFString &aeTitle = "",
+                               const Uint16 messageID = 0);
 
-    /** reset the sent status for all SOP instances in the transfer list.  This alllows for
+    /** reset the sent status for all SOP instances in the transfer list.  This allows for
      *  sending the same SOP instances again - on the same or a different association.
-     *  @param  sameAssociation  flag indicating whether the same assocation will be used for
+     *  @param  sameAssociation  flag indicating whether the same association will be used for
      *                           the transfer as last time.  If a different association will
      *                           be used, also the presentation context IDs are set to 0
      *                           (undefined), which means that addPresentationContexts() has
@@ -322,16 +326,12 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
      *  transfer is never stopped when the DIMSE status is different from 0x0000 (success).
      *  Each time a SOP instance from the transfer list has been processed, the virtual method
      *  notifySOPInstanceSent() is called, which can be overwritten by a derived class.
+     *  The sending process can be stopped by overwriting shouldStopAfterCurrentSOPInstance()
+     *  in a derived class.  The sending process can be continued with the next SOP instance
+     *  by calling sendSOPInstances() again.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition sendSOPInstances();
-
-    /** release the current association by sending an A-RELEASE request to the SCP.  Please
-     *  note that this release only applies to associations that have been created by calling
-     *  DcmSCU::initNetwork() and DcmSCU::negotiateAssociation().
-     *  @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition releaseAssociation();
 
     /** get some status information on the overall sending process.  This text can for example
      *  be output to the logger (on the level at the user's option).
@@ -523,21 +523,21 @@ class DCMTK_DCMNET_EXPORT DcmStorageSCU
 
     /** This method is called each time a SOP instance is sent to a peer.  Since it is called
      *  after the SOP instance has been processed, the transfer entry passed to this method
-     *  contains current information, e.g. the DIMSE status of the C-STORE response.  This also
-     *  allows for counting the number of successful and failed transfers.
+     *  contains current information, e.g. the DIMSE status of the C-STORE response.  This
+     *  also allows for counting the number of successful and failed transfers.
      *  @param  transferEntry  reference to current transfer entry that has been processed
      */
     virtual void notifySOPInstanceSent(const TransferEntry &transferEntry);
 
-    /** This method is called each time after a SOP instance is sent to a peer. If the
-     *  function returns OFTrue, the SCU will stop sending, and behaves like it has already
-     *  sent the last instance to the SCP. This function always returns OFFalse in the
-     *  default implementation but may be overwritten by derived SCU classes.
-     *  This could for example make sense, if one is transferring SOP instances due to a
-     *  C-MOVE request, which is externally cancelled by a C-CANCEL message.
-     *  @return  OFTrue if sending should stop after current dataset, OFFalse otherwise.
+    /** This method is called each time after a SOP instance is sent to a peer.  If the
+     *  return value is OFTrue, the SCU will stop the sending process after the current SOP
+     *  instance.  This could for example make sense when transferring SOP instances due to
+     *  a C-MOVE request, which is externally cancelled by a C-CANCEL message.  The default
+     *  implementation always returns OFFalse.  A derived class may change this behavior.
+     *  @return OFTrue if sending should stop after current SOP instance, OFFalse otherwise.
      */
     virtual OFBool shouldStopAfterCurrentSOPInstance();
+
 
   private:
 

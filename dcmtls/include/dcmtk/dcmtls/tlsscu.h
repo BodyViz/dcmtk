@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2010-2011, OFFIS e.V.
+ *  Copyright (C) 2010-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -52,7 +52,7 @@ public:
    */
   DcmTLSSCU(const OFString& peerHost,
             const OFString& peerAETitle,
-            const Uint16& portNum);
+            const Uint16 portNum);
 
   /** Virtual destructor
     */
@@ -70,6 +70,8 @@ public:
   virtual OFCondition negotiateAssociation();
 
   /** Closes the association of this SCU
+   *  @deprecated The use of this method is deprecated. Please use
+   *    DcmSCU::releaseAssociation() or DcmSCU::abortAssociation() instead.
    *  @param closeType [in] Define whether to release or abort the association
    */
   virtual void closeAssociation(const DcmCloseAssociationType closeType);
@@ -98,8 +100,8 @@ public:
   virtual void enableAuthentication(const OFString& privateKey,
                                     const OFString& certFile,
                                     const char* passphrase = NULL,
-                                    const int& privKeyFormat = SSL_FILETYPE_PEM,
-                                    const int& certFormat = SSL_FILETYPE_PEM);
+                                    const int privKeyFormat = SSL_FILETYPE_PEM,
+                                    const int certFormat = SSL_FILETYPE_PEM);
 
   /** Disables authentication. However, DcmTLSSCU will try to establish secured connection
    *  in terms of encrypting data. Default is that authentication is disabled.
@@ -122,18 +124,18 @@ public:
   virtual void setWriteSeedFile(const OFString& seedFile);
 
   /** Set whether peer's certificate must be there, only is checked if there or is ignored
-   *  @param cert [in] The following values are permitted:
+   *  @param cert [in] peer certificate verification mode. The following values are permitted:
    *                   DCV_requireCertificate, DCV_checkCertificate, DCV_ignoreCertificate
    */
-  virtual void setPeerCertVerification(const DcmCertificateVerification& cert);
+  virtual void setPeerCertVerification(const DcmCertificateVerification cert);
 
   /** Not documented yet
-   *  @param dhParam [in] Not documented yet
+   *  @param dhParam [in] TODO: Not documented yet
    */
   virtual void setDHParam(const OFString& dhParam);
 
   /** Returns OFTrue if authentication is enabled
-   *  @param TODO: Not documented yet
+   *  @param ... TODO: Not documented yet
    *  @return Return value OFTrue
    */
   virtual OFBool getAuthenticationParams(OFString& privKeyFile,
@@ -177,13 +179,13 @@ private:
   /** Private undefined copy-constructor. Shall never be called.
    *  @param src Source object
    */
-  DcmTLSSCU( const DcmTLSSCU &src );
+  DcmTLSSCU(const DcmTLSSCU &src);
 
   /** Private undefined operator=. Shall never be called.
    *  @param src Source object
    *  @return Reference to this
    */
-  DcmTLSSCU &operator=( const DcmTLSSCU &src );
+  DcmTLSSCU &operator=(const DcmTLSSCU &src);
 
   /// The TLS layer responsible for all encryption/authentication stuff
   DcmTLSTransportLayer *m_tLayer;
@@ -198,7 +200,7 @@ private:
   OFList<OFString> m_trustedCertFiles;
 
   /// The file containing the private key (if authentication is enabled)
-  OFString m_privateKeyFile ;
+  OFString m_privateKeyFile;
 
   /// Might be either "SSL_FILETYPE_PEM" (default) or "SSL_FILETYPE_ASN1"
   int m_privateKeyFileFormat;
@@ -214,20 +216,20 @@ private:
   /// given.
   char* m_passwd;
 
-  /// String containing all ciphersuites being (additionally? TODO) configured
+  /// String containing all cipher suites being (additionally? TODO) configured
   OFString m_ciphersuites;
 
-  /// TODO
+  /// TODO: Not documented yet
   OFString m_readSeedFile;
 
-  /// TODO
+  /// TODO: Not documented yet
   OFString m_writeSeedFile;
 
   /// Denotes how certificates are handled, i.e. whether they are required, validated or
   /// only validated if present
   DcmCertificateVerification m_certVerification;
 
-  /// File containing Diffie Hellman parameters to be used
+  /// File containing Diffie-Hellman parameters to be used
   OFString m_dhparam;
 
 };

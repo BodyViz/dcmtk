@@ -17,10 +17,12 @@ User and Provider:
 The following classes are derived from the above experimental classes and
 provide a particular DICOM Service:
 \li \b DcmStorageSCU
+\li \b DcmStorageSCP
 
 \section Tools
 
 This module contains the following command line tools:
+\li \ref dcmrecv
 \li \ref dcmsend
 \li \ref echoscu
 \li \ref findscu

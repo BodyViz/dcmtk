@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: thinkpad
-**   Date: 2013-02-11 18:18:45
+**   Date: 2013-08-20 14:55:32
 **   Prog: /home/joergr/Source/dcmtk-full/public/dcmdata/libsrc/mkdeftag
 **
 **   From: ../data/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2013-02-11 18:18:45"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2013-08-20 14:55:32"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 3632
+** Number of entries: 3647
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -132,6 +132,7 @@
 #define DCM_AccessionNumber                      DcmTagKey(0x0008, 0x0050)
 #define DCM_IssuerOfAccessionNumberSequence      DcmTagKey(0x0008, 0x0051)
 #define DCM_QueryRetrieveLevel                   DcmTagKey(0x0008, 0x0052)
+#define DCM_QueryRetrieveView                    DcmTagKey(0x0008, 0x0053)
 #define DCM_RetrieveAETitle                      DcmTagKey(0x0008, 0x0054)
 #define DCM_InstanceAvailability                 DcmTagKey(0x0008, 0x0056)
 #define DCM_FailedSOPInstanceUIDList             DcmTagKey(0x0008, 0x0058)
@@ -206,7 +207,9 @@
 #define DCM_TimeRange                            DcmTagKey(0x0008, 0x1163)
 #define DCM_FrameExtractionSequence              DcmTagKey(0x0008, 0x1164)
 #define DCM_MultiFrameSourceSOPInstanceUID       DcmTagKey(0x0008, 0x1167)
+#define DCM_RetrieveURL                          DcmTagKey(0x0008, 0x1190)
 #define DCM_TransactionUID                       DcmTagKey(0x0008, 0x1195)
+#define DCM_WarningReason                        DcmTagKey(0x0008, 0x1196)
 #define DCM_FailureReason                        DcmTagKey(0x0008, 0x1197)
 #define DCM_FailedSOPSequence                    DcmTagKey(0x0008, 0x1198)
 #define DCM_ReferencedSOPSequence                DcmTagKey(0x0008, 0x1199)
@@ -709,6 +712,12 @@
 #define DCM_NominalScannedPixelSpacing           DcmTagKey(0x0018, 0x2010)
 #define DCM_DigitizingDeviceTransportDirection   DcmTagKey(0x0018, 0x2020)
 #define DCM_RotationOfScannedFilm                DcmTagKey(0x0018, 0x2030)
+#define DCM_BiopsyTargetSequence                 DcmTagKey(0x0018, 0x2041)
+#define DCM_TargetUID                            DcmTagKey(0x0018, 0x2042)
+#define DCM_LocalizingCursorPosition             DcmTagKey(0x0018, 0x2043)
+#define DCM_CalculatedTargetPosition             DcmTagKey(0x0018, 0x2044)
+#define DCM_TargetLabel                          DcmTagKey(0x0018, 0x2045)
+#define DCM_DisplayedZValue                      DcmTagKey(0x0018, 0x2046)
 #define DCM_IVUSAcquisition                      DcmTagKey(0x0018, 0x3100)
 #define DCM_IVUSPullbackRate                     DcmTagKey(0x0018, 0x3101)
 #define DCM_IVUSGatedRate                        DcmTagKey(0x0018, 0x3102)
@@ -1249,6 +1258,9 @@
 #define DCM_DimensionOrganizationUID             DcmTagKey(0x0020, 0x9164)
 #define DCM_DimensionIndexPointer                DcmTagKey(0x0020, 0x9165)
 #define DCM_FunctionalGroupPointer               DcmTagKey(0x0020, 0x9167)
+#define DCM_UnassignedSharedConvertedAttributesSequence DcmTagKey(0x0020, 0x9170)
+#define DCM_UnassignedPerFrameConvertedAttributesSequence DcmTagKey(0x0020, 0x9171)
+#define DCM_ConversionSourceAttributesSequence   DcmTagKey(0x0020, 0x9172)
 #define DCM_DimensionIndexPrivateCreator         DcmTagKey(0x0020, 0x9213)
 #define DCM_DimensionOrganizationSequence        DcmTagKey(0x0020, 0x9221)
 #define DCM_DimensionIndexSequence               DcmTagKey(0x0020, 0x9222)
@@ -2350,6 +2362,7 @@
 #define DCM_MaximumFractionalValue               DcmTagKey(0x0062, 0x000e)
 #define DCM_SegmentedPropertyTypeCodeSequence    DcmTagKey(0x0062, 0x000f)
 #define DCM_SegmentationFractionalType           DcmTagKey(0x0062, 0x0010)
+#define DCM_SegmentedPropertyTypeModifierCodeSequence DcmTagKey(0x0062, 0x0011)
 #define DCM_DeformableRegistrationSequence       DcmTagKey(0x0064, 0x0002)
 #define DCM_SourceFrameOfReferenceUID            DcmTagKey(0x0064, 0x0003)
 #define DCM_DeformableRegistrationGridSequence   DcmTagKey(0x0064, 0x0005)
@@ -2701,6 +2714,7 @@
 #define DCM_BeamTaskSequence                     DcmTagKey(0x0074, 0x1020)
 #define DCM_BeamTaskType                         DcmTagKey(0x0074, 0x1022)
 #define DCM_RETIRED_BeamOrderIndexTrial          DcmTagKey(0x0074, 0x1024)
+#define DCM_AutosequenceFlag                     DcmTagKey(0x0074, 0x1025)
 #define DCM_TableTopVerticalAdjustedPosition     DcmTagKey(0x0074, 0x1026)
 #define DCM_TableTopLongitudinalAdjustedPosition DcmTagKey(0x0074, 0x1027)
 #define DCM_TableTopLateralAdjustedPosition      DcmTagKey(0x0074, 0x1028)
@@ -2989,6 +3003,7 @@
 #define DCM_DVHType                              DcmTagKey(0x3004, 0x0001)
 #define DCM_DoseUnits                            DcmTagKey(0x3004, 0x0002)
 #define DCM_DoseType                             DcmTagKey(0x3004, 0x0004)
+#define DCM_SpatialTransformOfDose               DcmTagKey(0x3004, 0x0005)
 #define DCM_DoseComment                          DcmTagKey(0x3004, 0x0006)
 #define DCM_NormalizationPoint                   DcmTagKey(0x3004, 0x0008)
 #define DCM_DoseSummationType                    DcmTagKey(0x3004, 0x000a)
@@ -3054,9 +3069,9 @@
 #define DCM_ROIElementalCompositionSequence      DcmTagKey(0x3006, 0x00b6)
 #define DCM_ROIElementalCompositionAtomicNumber  DcmTagKey(0x3006, 0x00b7)
 #define DCM_ROIElementalCompositionAtomicMassFraction DcmTagKey(0x3006, 0x00b8)
-#define DCM_FrameOfReferenceRelationshipSequence DcmTagKey(0x3006, 0x00c0)
-#define DCM_RelatedFrameOfReferenceUID           DcmTagKey(0x3006, 0x00c2)
-#define DCM_FrameOfReferenceTransformationType   DcmTagKey(0x3006, 0x00c4)
+#define DCM_RETIRED_FrameOfReferenceRelationshipSequence DcmTagKey(0x3006, 0x00c0)
+#define DCM_RETIRED_RelatedFrameOfReferenceUID   DcmTagKey(0x3006, 0x00c2)
+#define DCM_RETIRED_FrameOfReferenceTransformationType DcmTagKey(0x3006, 0x00c4)
 #define DCM_FrameOfReferenceTransformationMatrix DcmTagKey(0x3006, 0x00c6)
 #define DCM_FrameOfReferenceTransformationComment DcmTagKey(0x3006, 0x00c8)
 #define DCM_MeasuredDoseReferenceSequence        DcmTagKey(0x3008, 0x0010)

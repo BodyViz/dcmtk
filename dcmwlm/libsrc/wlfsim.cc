@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2012, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -104,7 +104,7 @@ OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( const OFString
 // Return Value : Indicates if the connection could be established or not.
 {
   // check parameter
-  if( dfPathv.length() == 0 )
+  if( dfPathv.empty() )
   {
     DCMWLM_ERROR("Invalid parameters, cannot connect to worklist file system database");
     return( WLM_EC_CannotConnectToDataSource );
@@ -149,7 +149,7 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 
   // Determine complete path to the files that make up the data source.
   OFString fullPath( dfPath );
-  if( fullPath.length() > 0 && fullPath[fullPath.length()-1] != PATH_SEPARATOR )
+  if( !fullPath.empty() && fullPath[fullPath.length()-1] != PATH_SEPARATOR )
     fullPath += PATH_SEPARATOR;
   fullPath += calledApplicationEntityTitle;
 
@@ -441,7 +441,7 @@ void WlmFileSystemInteractionManager::DetermineWorklistFiles( OFVector<OFString>
   // determine complete path to data source files
   // (dfPath + PATH_SEPARATOR + calledApplicationEntityTitle)
   OFString path( dfPath );
-  if( path.length() > 0 && path[path.length()-1] != PATH_SEPARATOR )
+  if( !path.empty() && path[path.length()-1] != PATH_SEPARATOR )
     path += PATH_SEPARATOR;
   path += calledApplicationEntityTitle;
 

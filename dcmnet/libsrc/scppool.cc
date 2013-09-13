@@ -18,7 +18,7 @@
  *  Purpose: Class listening for association requests and managing a pool of
  *  worker threads that each are waiting to take over a single incoming
  *  association. Thus, the pool can serve as many associations
- *  simultanously as the number of threads it is configured to create.
+ *  simultaneously as the number of threads it is configured to create.
  *
  */
 
@@ -95,10 +95,10 @@ OFCondition DcmBaseSCPPool::listen()
       }
     }
 
-    /* If error occured while receiving association, clean up */
+    /* If error occurred while receiving association, clean up */
     else
     {
-      /* Stop listening, if timeout occured, otherwise keep listening */
+      /* Stop listening, if timeout occurred, otherwise keep listening */
       if ( cond == DUL_NOASSOCIATIONREQUEST )
       {
         ASC_destroyAssociation( &assoc );
@@ -167,7 +167,8 @@ void DcmBaseSCPPool::setMaxThreads(const Uint16 maxWorkers)
 
 // ----------------------------------------------------------------------------
 
-OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,const DcmSharedSCPConfig& sharedConfig)
+OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,
+                                           const DcmSharedSCPConfig& sharedConfig)
 {
   /* Try to find idle worker thread */
   OFCondition result = EC_Normal;
@@ -228,7 +229,7 @@ OFCondition DcmBaseSCPPool::runAssociation(T_ASC_Association *assoc,const DcmSha
 // ----------------------------------------------------------------------------
 
 void DcmBaseSCPPool::rejectAssociation(T_ASC_Association *assoc,
-                                   const T_ASC_RejectParametersReason& reason)
+                                       const T_ASC_RejectParametersReason& reason)
 {
   T_ASC_RejectParameters rej;
   rej.result = ASC_RESULT_REJECTEDTRANSIENT;
@@ -274,7 +275,7 @@ void DcmBaseSCPPool::notifyThreadExit(DcmBaseSCPPool::DcmBaseSCPWorker* thread,
 
 
 /* *********************************************************************** */
-/*                        DcmBaseSCPPool::BaseSCPWorker class                               */
+/*                        DcmBaseSCPPool::BaseSCPWorker class              */
 /* *********************************************************************** */
 
 DcmBaseSCPPool::DcmBaseSCPWorker::DcmBaseSCPWorker(DcmBaseSCPPool& pool)

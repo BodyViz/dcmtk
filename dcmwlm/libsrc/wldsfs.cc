@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2010, OFFIS e.V.
+ *  Copyright (C) 1996-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -142,7 +142,7 @@ OFBool WlmDataSourceFileSystem::IsCalledApplicationEntityTitleSupported()
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
   // Check if calledApplicationEntityTitle does not have a valid value
-  if( calledApplicationEntityTitle.length() == 0 )
+  if( calledApplicationEntityTitle.empty() )
     return( OFFalse );
   else
     return( fileSystemInteractionManager.IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
@@ -646,7 +646,7 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   int result;
 
   // if no path or no calledApplicationEntityTitle is specified, return
-  if( dfPath.length() == 0 || calledApplicationEntityTitle.length() == 0 )
+  if( dfPath.empty() || calledApplicationEntityTitle.empty() )
   {
     DCMWLM_ERROR("WlmDataSourceFileSystem::SetReadlock: Path to data source files not specified");
     return OFFalse;
@@ -663,7 +663,7 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   OFString lockname = dfPath;
 
   // if the given path does not show a PATH_SEPERATOR at the end, append one
-  if( lockname.length() > 0 && lockname[lockname.length()-1] != PATH_SEPARATOR )
+  if( !lockname.empty() && lockname[lockname.length()-1] != PATH_SEPARATOR )
     lockname += PATH_SEPARATOR;
 
   // append calledApplicationEntityTitle, another PATH_SEPERATOR,

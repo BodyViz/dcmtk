@@ -9,9 +9,9 @@ SET(DCMTK_CONFIGURATION_DONE true)
 
 # Minimum CMake version required
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.10)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.10 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.10)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.11)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.8.11 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.8.11)
 
 # Basic version information
 # (Starting with version 3.5.5, an odd number at the last position indicates
@@ -61,7 +61,8 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 OPTION(DCMTK_WITH_PRIVATE_TAGS "Configure DCMTK with support for DICOM private tags coming with DCMTK." OFF)
 OPTION(DCMTK_WITH_THREADS "Configure DCMTK with support for multi-threading." ON)
-OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with doxygen." ON)
+OPTION(DCMTK_WITH_DOXYGEN "Build API documentation with DOXYGEN." ON)
+OPTION(DCMTK_GENERATE_DOXYGEN_TAGFILE "Generate a tag file with DOXYGEN." OFF)
 OPTION(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS "Build with wide char file I/O functions." OFF)
 OPTION(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char main function." OFF)
 
@@ -69,6 +70,7 @@ OPTION(DCMTK_WIDE_CHAR_MAIN_FUNCTION "Build command line tools with wide char ma
 MARK_AS_ADVANCED(CMAKE_DEBUG_POSTFIX)
 MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 MARK_AS_ADVANCED(SNDFILE_DIR DCMTK_WITH_SNDFILE) # not yet needed in public DCMTK
+MARK_AS_ADVANCED(DCMTK_GENERATE_DOXYGEN_TAGFILE)
 IF(NOT WIN32)
   # support for wide char file I/O functions is currently Windows-specific
   MARK_AS_ADVANCED(DCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS)
@@ -298,7 +300,7 @@ INCLUDE(${DCMTK_CMAKE_INCLUDE}CMake/GenerateDCMTKConfigure.cmake)
 # Dart configuration (disabled per default)
 #-----------------------------------------------------------------------------
 
-# Includes build targets Experimental, Nightly and Continous which are the standard
+# Includes build targets Experimental, Nightly and Continuous which are the standard
 # groups pre-configured in Dashboard. In CTest these groups are called "Tracks".
 #
 # INCLUDE(${CMAKE_ROOT}/Modules/Dart.cmake)

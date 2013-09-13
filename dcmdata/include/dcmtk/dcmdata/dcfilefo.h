@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2012, OFFIS e.V.
+ *  Copyright (C) 1994-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -237,7 +237,7 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
      *    Element values with a larger size are not loaded until their value is retrieved
-     *    (with getXXX()) or loadAllDataElements() is called.
+     *    (with getXXX()) or loadAllDataIntoMemory() is called.
      *  @param readMode read file with or without meta header, i.e. as a fileformat or a
      *    dataset.  Use ERM_fileOnly in order to force the presence of a meta header.
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -371,11 +371,14 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param transliterate mode specifying whether a character that cannot be
      *    represented in the destination character encoding is approximated through one
      *    or more characters that look similar to the original one
+     *  @param discardIllegal mode specifying whether characters that cannot be represented
+     *    in the destination character encoding will be silently discarded
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(const OFString &fromCharset,
                                             const OFString &toCharset,
-                                            const OFBool transliterate = OFFalse);
+                                            const OFBool transliterate = OFFalse,
+                                            const OFBool discardIllegal = OFFalse);
 
     /** convert all element values that are contained in the dataset and that are affected
      *  by SpecificCharacterSet to the given destination character set. The source
@@ -391,10 +394,13 @@ class DCMTK_DCMDATA_EXPORT DcmFileFormat
      *  @param transliterate mode specifying whether a character that cannot be
      *    represented in the destination character encoding is approximated through one
      *    or more characters that look similar to the original one
+     *  @param discardIllegal mode specifying whether characters that cannot be represented
+     *    in the destination character encoding will be silently discarded
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition convertCharacterSet(const OFString &toCharset,
-                                            const OFBool transliterate = OFFalse);
+                                            const OFBool transliterate = OFFalse,
+                                            const OFBool discardIllegal = OFFalse);
 
     /** convert all element values that are contained in the dataset and that are affected
      *  by SpecificCharacterSet from the currently selected source character set to the

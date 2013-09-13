@@ -1,6 +1,724 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2013.09.11 (riesmeier)
+
+- Fixed wrong Doxygen reference to a method:
+  Fixed wrong reference in API documentation to the loadAllDataIntoMemory()
+  method (was loadAllDataElements() before).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+
+**** Changes from 2013.09.04 (riesmeier)
+
+- Added support for generating a Doxygen tag file:
+  Added preliminary support for generating a Doxygen tag file. This file can be
+  used to link the generated HTML documentation from external projects.
+  Closes DCMTK feature #455.
+  Affects: CMake/dcmtkPrepare.cmake
+           doxygen/CMakeLists.txt
+           doxygen/Makefile.in
+           doxygen/htmldocs.cfg
+
+**** Changes from 2013.08.30 (riesmeier)
+
+- Updated copyright dates (where appropriate).
+  Affects: COPYRIGHT
+
+- Added new storage mode options:
+  Added two new command line options specifying the storage mode to be used:
+  --normal and --bit-preserving.
+  Affects: dcmnet/apps/dcmrecv.cc
+           dcmnet/docs/dcmrecv.man
+
+- Added new dataset storage mode:
+  Added new storage mode that allows for receiving a dataset directly to file,
+  i.e. the data is written exactly as received. This is what the storescp calls
+  "bit preserving mode".
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+
+- Receive C-STORE request dataset directly to file:
+  Added method that allows for receiving a C-STORE request dataset directly to
+  file. Using this new method, large SOP instances can be received with less
+  memory requirements and the datasets can be stored as received (i.e. without
+  any conversions).
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/scp.cc
+
+- Fixed various typos in comments.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
+**** Changes from 2013.08.29 (riesmeier)
+
+- Introduced dataset storage mode:
+  Added new option that allows for ignoring the received dataset, i.e. the
+  DICOM dataset received with a C-STORE request message is not stored to file.
+  Affects: dcmnet/apps/dcmrecv.cc
+           dcmnet/docs/dcmrecv.man
+           dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+
+**** Changes from 2013.08.27 (riesmeier)
+
+- Restructured implementation of handleSTORERequest():
+  Completely restructured the implementation of handleSTORERequest(), which now
+  consists of calling 3 separate methods successively: receiveSTORERequest(),
+  checkSTORERequest() and sendSTOREResponse(). This could be the prototype for
+  all other network messages currently supported by this class. Also regrouped
+  the various network message methods.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/dstorscp.cc
+           dcmnet/libsrc/scp.cc
+
+- Fixed various typos in comments.
+  Affects: dcmnet/include/dcmtk/dcmnet/scu.h
+
+- Fixed wrong log message in handleMOVERequest().
+  Affects: dcmnet/libsrc/scp.cc
+
+- Removed "&" from constant integer parameters:
+  Removed "&" specifier from constant integer parameters since passing such
+  input values by-reference does not make any sense. Also fixed some layout
+  and formatting issues.
+  Affects: dcmtls/include/dcmtk/dcmtls/tlsscu.h
+           dcmtls/libsrc/tlsscu.cc
+
+**** Changes from 2013.08.26 (riesmeier)
+
+- Removed class name from derived method calls:
+  Removed explicit class name when calling a derived method (as long as the
+  method name is unambiguous, i.e. the compiler does not complain).
+  Affects: dcmnet/libsrc/dstorscp.cc
+
+- Do not copy received dataset in memory:
+  Made sure that the DICOM dataset received via a C-STORE request is not copied
+  in memory (i.e. to a DcmFileFormat structure) in order to store it as a DICOM
+  file (i.e. with file meta information header).
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+
+- Fixed various inconsistencies in comments.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+
+- Pass existing dataset to handleSTORERequest():
+  Enhanced handleSTORERequest() by allowing an existing dataset to be passed to
+  this method. This avoids copying a received dataset to a fileformat structure
+  in order to store the dataset as a DICOM file.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Fixed various typos in comments.
+  Affects: dcmnet/apps/storescp.cc
+
+**** Changes from 2013.08.23 (riesmeier)
+
+- Added meta header to stored DICOM files:
+  Made sure that the file meta information header is written to all created
+  DICOM files. Previously only the DICOM dataset was written to file.
+  Affects: dcmnet/libsrc/dstorscp.cc
+
+**** Changes from 2013.08.23 (onken)
+
+- Always write meta header when receiving files. Removed Winsock comment.
+  Affects: dcmnet/libsrc/scu.cc
+
+- Added missing CHANGES entry.
+  Affects: CHANGES.361
+
+**** Changes from 2013.08.20 (riesmeier)
+
+- Added support for Supplement 163 to data dictionary:
+  Added support for final text version of Supplement 163 (Store Over the Web by
+  RESTful Services, STOW-RS) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 2013.08.20 (onken)
+
+- Make sure oflog also compiles if threads are disabled.
+  Affects: oflog/libsrc/socketap.cc
+
+**** Changes from 2013.08.14 (riesmeier)
+
+- Deprecated closeAssociation() method:
+  Added comment that closeAssociation() is deprecated and will probably be made
+  "protected" in the future. Instead of that, the methods releaseAssociation()
+  and abortAssociation() from the base class DcmSCU should be used.
+  Affects: dcmtls/include/dcmtk/dcmtls/tlsscu.h
+
+- Fixed various typos.
+  Affects: dcmtls/libsrc/tlsscu.cc
+
+**** Changes from 2013.08.13 (riesmeier)
+
+- Updated CMake version:
+  Updated information on latest CMake version that has been tested to "2.8.11".
+  Affects: CMake/dcmtkPrepare.cmake
+
+**** Changes from 2013.08.12 (riesmeier)
+
+- Function createDirectory() also works on Windows:
+  Implemented and tested the new function createDirectory() on Windows systems.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- Updated man pages.
+  Affects: dcmdata/docs/dcmodify.man
+           doxygen/manpages/man1/*
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmnet/tests/Makefile.dep
+
+- Added comments to unused exit codes.
+  Affects: dcmnet/apps/dcmsend.cc
+
+- Added new command line tool "dcmrecv":
+  This tool is a Simple Storage Service Class Provider, which is based on the
+  recently introduced network class DcmStorageSCP.
+  Added:   dcmnet/apps/dcmrecv.cc
+           dcmnet/docs/dcmrecv.man
+           doxygen/manpages/man1/dcmrecv.1
+  Affects: dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/Makefile.dep
+           dcmnet/apps/Makefile.in
+           dcmnet/docs/dcmnet.dox
+           dcmnet/docs/dcmsend.man
+
+- Added new class DcmStorageSCP:
+  Added an easy-to-use interface class for a Storage Service Class Provider
+  (SCP), which stores the received datasets as DICOM files.
+  Added:   dcmnet/include/dcmtk/dcmnet/dstorscp.h
+           dcmnet/libsrc/dstorscp.cc
+  Affects: dcmnet/docs/dcmnet.dox
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+           ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/ofcond.cc
+
+- Fixed some minor Doxygen issues.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+
+- Added global helper function createDirectory():
+  Added a global helper function to OFStandard that allows for creating file
+  directories in a portable way. This also includes the creation of arbitrary
+  sub-directories, i.e. this function works "recursively".
+  Please note that createDirectory() has not yet been implemented for the
+  Windows platform.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofcond.cc
+           ofstd/libsrc/ofstd.cc
+
+**** Changes from 2013.08.09 (riesmeier)
+
+- Removed trailing spaces.
+  Affects: ofstd/libsrc/offname.cc
+
+- Added progress notification to DcmSCP:
+  Added support for progress notifications while sending and receiving DICOM
+  datasets. This is the same approach as already implemented in DcmSCU.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/include/dcmtk/dcmnet/scpcfg.h
+           dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scpcfg.cc
+
+- Removed unused fields from sendACTIONResponse():
+  Removed optional "Action Type ID" and unused "Dataset" from N-ACTION Response.
+  Please note that this changes the signature of sendACTIONResponse().
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+- Fixed issues with optional message fields:
+  Fixed issues with optional message fields "Affected SOP Class UID" and
+  "Affected SOP Instance UID", which were not always enabled correctly.
+  Affects: dcmnet/libsrc/scp.cc
+
+- Modified log output in loadAssociationCfgFile():
+  Slightly modified the log output in loadAssociationCfgFile(), e.g. by showing
+  the name of the configuration file on the debug logger. Also check the input
+  filename for an empty string and return an error code in such a case.
+  Affects: dcmnet/libsrc/scpcfg.cc
+
+**** Changes from 2013.08.08 (riesmeier)
+
+- Reimplemented sendSTOREResponse() method:
+  Please note that the signature of sendSTOREResponse() changed with this
+  commit. There are now two variants of this method: one that is quite easy to
+  use and the other that allows for specifying more details.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.c
+
+- Use optional fields in sendSTOREResponse():
+  Made sure that the optional fields "Affected SOP Class UID" and "Affected SOP
+  Instance UID" in sendSTOREResponse() are really used. Also fixed some typos.
+  Affects: dcmnet/libsrc/scu.cc
+
+- Fixed various typos.
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+
+- Added new condition constants:
+  Added two new conditions constants for general directory-related errors:
+  EC_DirectoryDoesNotExist and EC_DirectoryNotWritable.
+  Affects: ofstd/include/dcmtk/ofstd/ofcond.h
+           ofstd/libsrc/ofcond.cc
+
+**** Changes from 2013.08.07 (riesmeier)
+
+- Enable WITH_THREADS for thread-related classes.
+  Affects: doxygen/htmldocs.cfg
+
+- Fixed various typos and other Doxygen issues.
+  Affects: dcmnet/docs/cptscp.doxygen
+           dcmnet/include/dcmtk/dcmnet/scppool.h
+           dcmnet/libsrc/scppool.cc
+
+- Added releaseAssociation() and abortAssociation():
+  Added two new methods releaseAssociation() and abortAssociation() that should
+  be used instead of closeAssociation(). The latter is now deprecated and will
+  probably be made "protected" in the future. Closes DCMTK feature #531.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dstorscu.cc
+           dcmnet/libsrc/scu.cc
+
+- Fixed various typos.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scppool.cc
+
+**** Changes from 2013.08.06 (riesmeier)
+
+- Removed trailing space characters:
+  Removed trailing space characters and fixed other minor issues.
+  Affects: dcmnet/include/dcmtk/dcmnet/dcasccff.h
+           dcmnet/include/dcmtk/dcmnet/dcasccfg.h
+           dcmnet/libsrc/dcasccff.cc
+           dcmnet/libsrc/dcasccfg.cc
+
+- Fixed further documentation issues.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
+**** Changes from 2013.08.05 (riesmeier)
+
+- Really call shouldStopAfterCurrentSOPInstance():
+  Although the method shouldStopAfterCurrentSOPInstance() has been introduced
+  with commit 65f2966, it was never called during sendSOPInstances(), so the
+  sending process could not be stopped (as described in the documentation).
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/libsrc/dstorscu.cc
+
+- Fixed various oddities and inconsistencies:
+  Fixed various oddities and inconsistencies regarding the documentation style
+  (e.g. undocumented parameters) and the source code formatting.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
+- Replaced tabulator by space characters.
+  Affects: dcmnet/include/dcmtk/dcmnet/scppool.h
+
+- Fixed various oddities and inconsistencies:
+  Fixed various oddities and inconsistencies regarding the C-MOVE originator
+  information, e.g. the get and set methods.
+  Affects: dcmnet/include/dcmtk/dcmnet/dstorscu.h
+           dcmnet/include/dcmtk/dcmnet/scu.h
+           dcmnet/libsrc/dstorscu.cc
+           dcmnet/libsrc/scu.cc
+
+- Added comment on inappropriate use of EC_IllegalCall.
+  Affects: dcmnet/libsrc/scpthrd.cc
+
+- Updated version number of snapshot compilers:
+  Updated the version number of the Linux and Windows compilers the DCMTK
+  snapshot has been tested with.
+  Affects: INSTALL
+
+**** Changes from 2013.08.01 (riesmeier)
+
+- Fixed wrong VR for private AGFA IMPAX tag.
+  The VR given for "date_time_verified" (0031,xx01) in the "AGFA IMPAX 6.5.x
+  Solution" conformance statement is apparently wrong. It should be "UL"
+  instead of "CS" since it seems to specify a UNIX timestamp (32 bit).
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
+- Added private tags for AGFA IMPAX 6.5.x Solution.
+  Added two private tag definitions from the "AGFA IMPAX 6.5.x Solution"
+  conformance statement.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
+- Added support for new VR "Other Double String" (OD):
+  Added support for new value representation "Other Double String" (OD) that
+  has been introduced only recently with CP-1261 (Other Double 64 Bit Floating
+  Point Value Representation). Closes DCMTK feature #526.
+  Added:   dcmdata/include/dcmtk/dcmdata/dcvrod.h
+           dcmdata/libsrc/dcvrod.cc
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/tests/telemlen.cc
+           dcmdata/tests/tests.cc
+
+**** Changes from 2013.07.26 (onken)
+
+- Fixed possible doubled destruction of association.
+  Affects: dcmnet/libsrc/scp.cc
+
+**** Changes from 2013.07.25 (riesmeier)
+
+- Replaced "OFString::length() > 0" by "!OFString::empty()".
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmjpeg/libsrc/djcodece.cc
+           dcmjpeg/libsrc/djutils.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dccfuidh.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/libsrc/dcmpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpscf.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+           ofstd/libsrc/ofconapp.cc
+
+- Replaced "OFString::length() != 0" by "!OFString::empty()".
+  Affects: dcmdata/apps/mdfdsman.cc
+           dcmdata/libi2d/i2d.cc
+
+- Replaced "OFString::length() == 0" by "OFString::empty()".
+  Affects: dcmdata/apps/img2dcm.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libi2d/i2dbmps.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsvw.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/libsrc/wldsfs.cc
+           dcmwlm/libsrc/wlfsim.cc
+
+**** Changes from 2013.07.23 (onken)
+
+- Fixed issues where JPEG marker map was not cleared if
+  more than one JPEG was converted using the same plugin
+  instance.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+
+**** Changes from 2013.07.12 (riesmeier)
+
+- Fixed issue with misplaced log output, which caused the use of an
+  uninitialized variable ("req").
+  Thanks to Mathieu Malaterre <malat@debian.org> for the valgrind report and
+  to Uli Schlachter <psychon@znc.in> for his expert opinion.
+  Affects: dcmnet/apps/movescu.cc
+
+**** Changes from 2013.07.05 (onken)
+
+- Fixed too small buffer for UID in Q/R server. Thanks to Mathieu
+  Malaterre <malat@debian.org> for the report and fix.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
+
+**** Changes from 2013.06.27 (onken)
+
+- Fixed typo (coersion -> coercion) in DIMSE status constant. Thanks to
+  Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and suggested fix.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dstorscu.cc
+
+**** Changes from 2013.06.26 (riesmeier)
+
+- Fixed bug in getTimeZoneFromString() method. Added new test for this case.
+  Thanks to Tamas Nemeth <tnemeth@erad.com> for the report and suggested fix.
+  Affects: dcmdata/libsrc/dcvrtm.cc
+           dcmdata/tests/tvrdatim.cc
+
+**** Changes from 2013.06.24 (riesmeier)
+
+- Minor fixes to comments on VOI-related methods.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
+- Added support for new SOP Class UIDs from Supplement 157 (Multi-Frame
+  Converted Legacy Images).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/docs/storescp.man
+           dcmnet/etc/storescp.cfg
+           dcmnet/etc/storescu.cfg
+           dcmqrdb/docs/dcmqrscp.man
+
+- Added support for final text version of Supplement 157 (Multi-Frame Converted
+  Legacy Images) to the data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+- Slightly enhanced documentation of completion flag methods (in accordance
+  with the recently approved CP-1219).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
+- Added support for CP-1248, CP-1258 and CP-1269 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 2013.06.11 (riesmeier)
+
+- Various fixes to comments. Also removed trailing white spaces.
+  Affects: ofstd/include/dcmtk/ofstd/ofmem.h
+           ofstd/tests/tmem.cc
+
+*** Changes from 2013.06.10 (onken)
+
+- Make sure SCU and SCP request/response data structures are initially zeroed.
+  Affects: dcmnet/libsrc/scp.cc
+           dcmnet/libsrc/scu.cc
+
+- Added missing CHANGES entry for last 2 commits.
+  Affects: CHANGES.361
+
+*** Changes from 2013.06.10 (schlamelcher)
+
+- Make use of unique pointer (free memory if C-MOVE/C-FIND is canceled).
+  Affects: dcmnet/libsrc/scu.cc
+
+- Introduced OFunique_ptr as a fallback if std::unique_ptr is not available.
+  Affects: ofstd/include/ofmem.h
+           ofstd/tests/tmem.cc
+
+**** Changes from 2013.06.04 (onken)
+
+- Add "Discard illegal character" support to dcmconv and classes like DcmItem.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+
+- Added option to discard illegal characters when converting between
+  DICOM character sets.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/dcspchrs.cc
+           dcmdata/tests/tspchrs.cc
+
+**** Changes from 2013.06.04 (riesmeier)
+
+- Fixed minor inconsistencies introduced with last commit (9fd4776).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcspchrs.h
+           dcmdata/libsrc/dcspchrs.cc
+           tests/tspchrs.cc
+
+- Output absolute minimum and maximum value of intermediate pixel data to trace
+  logger in order to better understand the result (output data) when rendering
+  an image without VOI transformation.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+
+**** Changes from 2013.06.03 (riesmeier)
+
+- Added missing support for the new print options (short name, long name or UID
+  value) to the output of presentation state references of IMAGE content items.
+  Thanks to Mathieu Malaterre <malat@debian.org> for the report on this issue.
+  Affects: dcmsr/libsrc/dsrimgvl.cc
+
+**** Changes from 2013.05.31 (riesmeier)
+
+- Fixed issue with unnecessary call to clearNodeCursorStack(). This undesirable
+  stack cleanup prevented gotoNextNamedNode() from working correctly.
+  Thanks to forum user "Tim" for the original report demonstrating this issue.
+  Affects: dcmsr/libsrc/dsrdoctr.cc
+
+**** Changes from 2013.05.30 (riesmeier)
+
+- Fixed some tag key constants of recently retired attributes (CP-1249).
+  Affects: dcmrt/libsrc/drtforrs.cc
+
+- Added support for CP-1246 and CP-1249 to data dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 2013.05.27 (onken)
+
+- Make sure memcpy does not copy to NULL destination. Thanks to Francesco
+  Gigante <fgigante@imsitaly.com> for the report.
+  Affects: dcmdata/libsrc/dcelem.cc
+
+**** Changes from 2013.05.15 (riesmeier)
+
+- Made more clear that support for shared libraries is still not that mature.
+  Affects: INSTALL
+
+**** Changes from 2013.04.25 (riesmeier)
+
+- Fixed bug in checkSOPClassUID() that caused all currently defined Waveform
+  SOP classes to be rejected. This bug was introduced with commit a0fe345b.
+  Affects: dcmsr/libsrc/dsrwavvl.cc
+
+- Added command line options using the new print flags specifying how the SOP
+  class of referenced DICOM objects is printed. Also did some restructuring.
+  Thanks to Mathieu Malaterre <malat@debian.org> for the suggestion.
+  Affects: dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsrdump.man
+
+- Added new options for specifying how the SOP class of referenced DICOM
+  objects is printed (short name, long name or UID value).
+  Thanks to Mathieu Malaterre <malat@debian.org> for the suggestion.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrimgvl.cc
+           dcmsr/libsrc/dsrtypes.cc
+           dcmsr/libsrc/dsrwavvl.cc
+
+**** Changes from 2013.04.23 (riesmeier)
+
+- Added some debug output to read() method, e.g. whether the automatic transfer
+  syntax detection is enabled and actually used.
+  Affects: dcmdata/libsrc/dcdatset.cc
+
+- Added some debug output to lookForXfer() method, e.g. whether the meta-header
+  is present at all and whether it contains the TransferSyntaxUID element.
+  Affects: dcmdata/libsrc/dcfilefo.cc
+
+**** Changes from 2013.04.19 (riesmeier)
+
+- Added missing sub-directory "oflog/thread" to "make install" target.
+  Thanks to Markus Mertens <Markus.Mertens@evkb.de> for the report.
+  Affects: oflog/include/Makefile.in
+
+**** Changes from 2013.04.08 (riesmeier)
+
+- Fixed issue with last pixel value being undefined in odd-length pixel data
+  (occurred in partial access mode with PixelData VR=OW and BitsAllocated=8).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
+**** Changes from 2013.04.08 (schlamelcher)
+
+- Some workarounds for VC6 compiler peculiarity.
+  Affects: dcmdata/tests/tfilter.cc
+           dcmnet/include/dcmtk/dcmnet/scppool.h
+
+**** Changes from 2013.04.05 (riesmeier)
+
+- Use non-throwing new and delete operator for large memory buffers (e.g. pixel
+  data) in order to avoid exceptions.
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
+- Fixed two possible memory leaks found by static code analysis (cppcheck).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for the report and patch.
+  Affects: dcmnet/libsrc/assoc.cc
+
+- Added comment to a local variable that is currently unused (but might be used
+  in the future).
+  Thanks to Peter Klotz <Peter.Klotz@ith-icoserve.com> for pointing this out.
+  Affects: dcmnet/libsrc/dimse.cc
+
+**** Changes from 2013.03.28 (schlachter)
+
+- Silence some more compiler warnings about implicit casts.
+  Affects: dcmdata/tests/dctmacro.h
+           oflog/libsrc/timehelp.cc
+
+**** Changes from 2013.03.25 (schlachter)
+
+- Fixed crash if less than four transfer syntaxes are enabled.
+  This fixes debian bug #703716.
+  Affects: dcmqrdb/libsrc/dcmqrsrv.cc
+
+- Worked around compiler warnings on 32bit systems for too large shifts.
+  Affects: dcmjpls/libcharls/util.h
+
+- Fixed compiler warnings in ConvertIntegerToString with unsigned integers.
+  Affects: oflog/include/dcmtk/oflog/helpers/strhelp.h
+
+- Fixed bug in OFString::copy() and improved unit tests.
+  Thanks to forum user "oxymoron" for the report.
+  Affects: ofstd/libsrc/ofstring.cc
+           ofstd/tests/tests.cc
+           ofstd/tests/tstring.cc
+
+**** Changes from 2013.03.22 (riesmeier)
+
+- Minor fixes in comments. Also made some input parameters "const".
+  Affects: dcmnet/include/dcmtk/dcmnet/scp.h
+           dcmnet/libsrc/scp.cc
+
+**** Changes from 2013.03.21 (riesmeier)
+
+- Minor fixes in comments, e.g. typos.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+
+**** Changes from 2013.03.19 (schlachter)
+
+- Don't include intrin.h on Visual Studio 2005 because of build errors.
+  Affects: oflog/include/dcmtk/oflog/config/win32.h
+
+- Use DcmTagKey's output operator where possible.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcobject.cc
+
+**** Changes from 2013.03.11 (schlachter)
+
+- Fixed various issues found via cppcheck. Thanks to Per Inge
+  Mathisen <per.mathisen@gmail.com> for the report and suggested fix.
+  Affects: dcmdata/libsrc/mkdictbi.cc
+           dcmnet/libsrc/assoc.cc
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmsign/libsrc/dcsignat.cc
+           oflog/libsrc/striconv.cc
+
+- Update rootconf for changes which were done directly to generated files.
+  Affects: config/rootconf
+
+- Use ".NOTPARALLEL:" to make parallel builds (e.g. -j4) possible.
+  Thanks to Tilman Vogel <tilman@circlecvi.com> for the patch.
+  Affects: Makefile
+
+- Removed unused local variable which shadowed a variable with the same name.
+  Affects: dcmnet/libsrc/scp.cc
+
+- Fixed wrong definition of Value Representation Person Name (PN): Allow empty
+  component groups while still not allowing completely empty PN elements.
+  Thanks to forum user "Hua Cong Danh" for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvr*.h
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/vrscanl.c
+           dcmdata/libsrc/vrscanl.h
+           dcmdata/libsrc/vrscanl.l
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/tchval.cc
+
+**** Changes from 2013.03.08 (riesmeier)
+
+- Fixed various issues in syntax usage output (e.g. inconsistent program name).
+  Affects: dcmwlm/wwwapps/writwlst.cc
+
 **** Changes from 2013.02.15 (onken)
 
 - Added optional status detail when sending C-MOVE response.
@@ -1098,14 +1816,14 @@ Changes between releases are documented here.
 - Fixed some minor inconsistencies between the data dictionary and part 6 of
   the DICOM standard. This mainly affects the spelling of the attribute names.
   Also added some tags that were missing because they are not used in part 3.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
            dcmnet/libsrc/dimcmd.cc
 
 - Fixed wrong attribute tags for Row/ColumnPositionInTotalImagePixelMatrix.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/data/dicom.dic
            dcmdata/include/dcmtk/dcmdata/dcdeftag.h
            dcmdata/libsrc/dcdictzz.cc
@@ -1474,7 +2192,7 @@ Changes between releases are documented here.
 
 - Fixed wrong output format of pixel sequence elements for the DICOM Native
   Model (according to PS 3.19).
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/include/dcmtk/dcmdata/dcpixseq.h
            dcmdata/libsrc/dcpixseq.cc
 
@@ -1482,13 +2200,13 @@ Changes between releases are documented here.
 
 - Fixed wrong attribute name of BulkData element: According to the XML Schema
   in PS 3.19, the name for the UUID reference is "uuid" and not "UUID".
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcvrobow.cc
            dcmdata/libsrc/dcvrof.cc
 
 - Made sure that hexadecimal numbers of attribute tags are always printed in
   uppercase for the Native Model (as required by the XML Schema in PS 3.19).
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
 
 **** Changes from 2012.07.10 (riesmeier)
@@ -1638,7 +2356,7 @@ Changes between releases are documented here.
 **** Changes from 2012.07.03 (riesmeier)
 
 - Make sure that "??" is never used for an unknown VR in the XML output.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dcsequen.cc
 
@@ -1703,7 +2421,7 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcfilefo.cc
 
 - Fixed wrong error message for conflict check of option --write-binary-data.
-  Thanks Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/apps/dcm2xml.cc
 
 **** Changes from 2012.06.29 (riesmeier)

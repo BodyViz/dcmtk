@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2012, OFFIS e.V.
+ *  Copyright (C) 2000-2013, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
  *
  *  This software and supporting documentation were developed by
@@ -83,15 +83,21 @@ OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
 OFCondition DSRWaveformReferenceValue::print(STD_NAMESPACE ostream &stream,
                                              const size_t flags) const
 {
-    const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
-    stream << "(";
-    if (className != NULL)
-        stream << className;
-    else
-        stream << "\"" << SOPClassUID << "\"";
-    stream << ",";
+    /* first, determine SOP class component */
+    OFString sopClassString = "\"" + SOPClassUID + "\"";
+    if (!(flags & DSRTypes::PF_printSOPClassUID))
+    {
+        /* look up name of known SOP classes */
+        const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
+        if (className != NULL)
+            sopClassString = className;
+    }
+    /* and then, print it */
+    stream << "(" << sopClassString << ",";
+    /* print SOP instance component (if desired) */
     if (flags & DSRTypes::PF_printSOPInstanceUID)
         stream << "\"" << SOPInstanceUID << "\"";
+    /* print channel list (if present) */
     if (!ChannelList.isEmpty())
     {
         stream << ",";
@@ -238,15 +244,15 @@ OFCondition DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClass
     if (result.good())
     {
         /* check for all valid/known SOP classes (according to DICOM PS 3.6-2011) */
-        if ((sopClassUID == UID_TwelveLeadECGWaveformStorage) ||
-            (sopClassUID == UID_GeneralECGWaveformStorage) ||
-            (sopClassUID == UID_AmbulatoryECGWaveformStorage) ||
-            (sopClassUID == UID_HemodynamicWaveformStorage) ||
-            (sopClassUID == UID_CardiacElectrophysiologyWaveformStorage) ||
-            (sopClassUID == UID_BasicVoiceAudioWaveformStorage) ||
-            (sopClassUID == UID_GeneralAudioWaveformStorage) ||
-            (sopClassUID == UID_ArterialPulseWaveformStorage) ||
-            (sopClassUID == UID_RespiratoryWaveformStorage))
+        if ((sopClassUID != UID_TwelveLeadECGWaveformStorage) &&
+            (sopClassUID != UID_GeneralECGWaveformStorage) &&
+            (sopClassUID != UID_AmbulatoryECGWaveformStorage) &&
+            (sopClassUID != UID_HemodynamicWaveformStorage) &&
+            (sopClassUID != UID_CardiacElectrophysiologyWaveformStorage) &&
+            (sopClassUID != UID_BasicVoiceAudioWaveformStorage) &&
+            (sopClassUID != UID_GeneralAudioWaveformStorage) &&
+            (sopClassUID != UID_ArterialPulseWaveformStorage) &&
+            (sopClassUID != UID_RespiratoryWaveformStorage))
         {
             result = SR_EC_InvalidValue;
         }
